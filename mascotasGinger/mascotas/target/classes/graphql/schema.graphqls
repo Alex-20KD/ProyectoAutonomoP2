@@ -1,0 +1,155 @@
+type Mascota {
+  id: ID!
+  nombre: String!
+  especie: String
+  raza: String
+  edad: Int
+  sexo: String
+  color: String
+  fechaIngreso: String
+}
+
+type Vacuna {
+  id: ID!
+  mascotaId: ID!
+  tipoVacuna: String
+  fechaAplicacion: String
+  proximaDosis: String
+  observaciones: String
+}
+
+type Dieta {
+  id: ID!
+  mascotaId: ID!
+  tipoAlimento: String
+  cantidadDiaria: String
+  horarioComidas: String
+  restricciones: String
+}
+
+type Alergia {
+  id: ID!
+  mascotaId: ID!
+  tipoAlergia: String
+  descripcion: String
+  reacciones: String
+  tratamiento: String
+}
+
+type HistorialMedico {
+  id: ID!
+  mascotaId: ID!
+  diagnosticos: String
+  tratamientos: String
+  fechaRegistro: String
+  veterinario: String
+}
+
+type Query {
+  hello: String
+  mascotas: [Mascota]
+  mascotaPorId(id: ID!): Mascota
+  vacunas: [Vacuna]
+  vacunaPorId(id: ID!): Vacuna
+  vacunasPorMascota(mascotaId: ID!): [Vacuna]
+  dietas: [Dieta]
+  dietaPorId(id: ID!): Dieta
+  dietasPorMascota(mascotaId: ID!): [Dieta]
+  alergias: [Alergia]
+  alergiaPorId(id: ID!): Alergia
+  alergiasPorMascota(mascotaId: ID!): [Alergia]
+  historialesMedicos: [HistorialMedico]
+  historialMedicoPorId(id: ID!): HistorialMedico
+  historialesMedicosPorMascota(mascotaId: ID!): [HistorialMedico]
+}
+
+type Mutation {
+  crearMascota(
+    nombre: String!,
+    especie: String,
+    raza: String,
+    edad: Int,
+    sexo: String,
+    color: String,
+    fechaIngreso: String
+  ): Mascota
+  eliminarMascota(id: ID!): Boolean
+  actualizarMascota(
+    id: ID!,
+    nombre: String,
+    especie: String,
+    raza: String,
+    edad: Int,
+    sexo: String,
+    color: String,
+    fechaIngreso: String
+  ): Mascota
+
+  crearVacuna(
+    mascotaId: ID!,
+    tipoVacuna: String,
+    fechaAplicacion: String,
+    proximaDosis: String,
+    observaciones: String
+  ): Vacuna
+  eliminarVacuna(id: ID!): Boolean
+  actualizarVacuna(
+    id: ID!,
+    mascotaId: ID,
+    tipoVacuna: String,
+    fechaAplicacion: String,
+    proximaDosis: String,
+    observaciones: String
+  ): Vacuna
+
+  crearDieta(
+    mascotaId: ID!,
+    tipoAlimento: String,
+    cantidadDiaria: String,
+    horarioComidas: String,
+    restricciones: String
+  ): Dieta
+  eliminarDieta(id: ID!): Boolean
+  actualizarDieta(
+    id: ID!,
+    mascotaId: ID,
+    tipoAlimento: String,
+    cantidadDiaria: String,
+    horarioComidas: String,
+    restricciones: String
+  ): Dieta
+
+  crearAlergia(
+    mascotaId: ID!,
+    tipoAlergia: String,
+    descripcion: String,
+    reacciones: String,
+    tratamiento: String
+  ): Alergia
+  eliminarAlergia(id: ID!): Boolean
+  actualizarAlergia(
+    id: ID!,
+    mascotaId: ID,
+    tipoAlergia: String,
+    descripcion: String,
+    reacciones: String,
+    tratamiento: String
+  ): Alergia
+
+  crearHistorialMedico(
+    mascotaId: ID!,
+    diagnosticos: String,
+    tratamientos: String,
+    fechaRegistro: String,
+    veterinario: String
+  ): HistorialMedico
+  eliminarHistorialMedico(id: ID!): Boolean
+  actualizarHistorialMedico(
+    id: ID!,
+    mascotaId: ID,
+    diagnosticos: String,
+    tratamientos: String,
+    fechaRegistro: String,
+    veterinario: String
+  ): HistorialMedico
+} 
