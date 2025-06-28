@@ -12,6 +12,15 @@ namespace GraphQLProject.Models
         [StringLength(200)]
         public string Title { get; set; } = string.Empty;
         
+        [StringLength(1000)]
+        public string Description { get; set; } = string.Empty;
+        
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Price { get; set; }
+        
+        public DateTime PublishedDate { get; set; }
+        
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         // Foreign key
         public int AuthorId { get; set; }
