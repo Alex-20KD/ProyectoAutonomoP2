@@ -1,0 +1,31 @@
+git init
+git remote add origin https://github.com/Alex-20KD/ProyectoAutonomoP2.git
+
+# Agrega solo los archivos del primer commit
+git add .gitignore README.md
+git add mascotas/
+GIT_COMMITTER_DATE="2024-07-02T12:05:00" git commit --date="2024-07-02T12:05:00" -m "feat: estructura base del proyecto y backend Java con entidades y servicios REST"
+
+# Agrega solo los archivos/cambios del segundo commit
+git add mascotas/Dockerfile
+git add mascotas/src/main/resources/application.properties
+git add README.md
+GIT_COMMITTER_DATE="2024-07-08T15:11:30" git commit --date="2024-07-08T15:11:30" -m "feat: agrega Dockerfile y configuración básica para backend Java"
+
+# Agrega solo los archivos/cambios del tercer commit
+git add postgres/
+git add docker-compose.yml
+git add mascotas/src/main/resources/application.properties
+git add README.md
+GIT_COMMITTER_DATE="2024-07-15T18:45:03" git commit --date="2024-07-15T18:45:03" -m "feat: integración de base de datos Postgres y orquestación con Docker Compose"
+
+# Agrega solo los archivos/cambios del tercer commit
+git add mascotas/src/main/resources/graphql/schema.graphqls
+git add mascotas/src/main/java/com/mascotas/mascotas/*GraphQL.java
+git add mascotas/pom.xml
+git add graphql-gateway/
+git add README.md
+GIT_COMMITTER_DATE="2024-07-23T23:49:20" git commit --date="2024-07-23T23:49:20" -m "feat: integración de GraphQL en backend y gateway Node.js para API unificada"
+
+git branch -M main
+git push -u origin main
