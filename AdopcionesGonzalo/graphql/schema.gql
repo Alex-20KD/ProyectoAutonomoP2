@@ -1,0 +1,176 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""Representa a una persona interesada en adoptar una mascota."""
+type Adoptante {
+  """Identificador único del adoptante."""
+  id: Int!
+
+  """Nombre completo del adoptante."""
+  nombre: String!
+
+  """Apellido(s) del adoptante."""
+  apellido: String!
+
+  """Correo electrónico único del adoptante."""
+  correo: String!
+
+  """Número de contacto telefónico del adoptante."""
+  telefono: String!
+
+  """Dirección completa de residencia del adoptante."""
+  direccion: String!
+
+  """Ciudad de residencia del adoptante."""
+  ciudad: String!
+
+  """País de residencia del adoptante."""
+  pais: String!
+
+  """Tipo de documento de identidad del adoptante (DNI, Pasaporte, etc.)."""
+  tipo_documento: String!
+
+  """Número del documento de identidad del adoptante."""
+  numero_documento: String!
+
+  """Fecha y hora en que el adoptante se registró en el sistema."""
+  fecha_registro: DateTime!
+
+  """Estado actual del adoptante en el sistema."""
+  estado: AdoptanteEstado!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum AdoptanteEstado {
+  ACTIVO
+  INACTIVO
+  SUSPENDIDO
+  PENDIENTE_VERIFICACION
+}
+
+type Mascota {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type SolicitudAdopcion {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type VisitaDomiciliaria {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type AcuerdoAdopcion {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type HistorialAdopcione {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  adoptante(id: Int!): Adoptante!
+  mascota(id: Int!): Mascota!
+  solicitudAdopcion(id: Int!): SolicitudAdopcion!
+  visitaDomiciliaria(id: Int!): VisitaDomiciliaria!
+  acuerdoAdopcion(id: Int!): AcuerdoAdopcion!
+  historialAdopciones: [HistorialAdopcione!]!
+  historialAdopcione(id: Int!): HistorialAdopcione!
+}
+
+type Mutation {
+  createAdoptante(createAdoptanteInput: CreateAdoptanteInput!): Adoptante!
+  updateAdoptante(updateAdoptanteInput: UpdateAdoptanteInput!): Adoptante!
+  removeAdoptante(id: Int!): Adoptante!
+  createMascota(createMascotaInput: CreateMascotaInput!): Mascota!
+  updateMascota(updateMascotaInput: UpdateMascotaInput!): Mascota!
+  removeMascota(id: Int!): Mascota!
+  createSolicitudAdopcion(createSolicitudAdopcionInput: CreateSolicitudAdopcionInput!): SolicitudAdopcion!
+  updateSolicitudAdopcion(updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput!): SolicitudAdopcion!
+  removeSolicitudAdopcion(id: Int!): SolicitudAdopcion!
+  createVisitaDomiciliaria(createVisitaDomiciliariaInput: CreateVisitaDomiciliariaInput!): VisitaDomiciliaria!
+  updateVisitaDomiciliaria(updateVisitaDomiciliariaInput: UpdateVisitaDomiciliariaInput!): VisitaDomiciliaria!
+  removeVisitaDomiciliaria(id: Int!): VisitaDomiciliaria!
+  createAcuerdoAdopcion(createAcuerdoAdopcionInput: CreateAcuerdoAdopcionInput!): AcuerdoAdopcion!
+  updateAcuerdoAdopcion(updateAcuerdoAdopcionInput: UpdateAcuerdoAdopcionInput!): AcuerdoAdopcion!
+  removeAcuerdoAdopcion(id: Int!): AcuerdoAdopcion!
+  createHistorialAdopcione(createHistorialAdopcioneInput: CreateHistorialAdopcioneInput!): HistorialAdopcione!
+  updateHistorialAdopcione(updateHistorialAdopcioneInput: UpdateHistorialAdopcioneInput!): HistorialAdopcione!
+  removeHistorialAdopcione(id: Int!): HistorialAdopcione!
+}
+
+input CreateAdoptanteInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAdoptanteInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateMascotaInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateMascotaInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateSolicitudAdopcionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateSolicitudAdopcionInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateVisitaDomiciliariaInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateVisitaDomiciliariaInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateAcuerdoAdopcionInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateAcuerdoAdopcionInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
+
+input CreateHistorialAdopcioneInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateHistorialAdopcioneInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
