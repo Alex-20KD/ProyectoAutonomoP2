@@ -7,47 +7,55 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    // Listar todas las tags
+    // Listar todos los tags
     public function index()
     {
-        return Tag::all();
+        return response()->json(Tag::all());
     }
 
-    // Crear una nueva tag
+    // Crear un nuevo tag
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'name' => 'required|string|max:255|unique:tags,name',
         ]);
 
-        $tag = Tag::create($validated);
+        $tag = Tag::create([
+            'name' => $request->name,
+        ]);
 
         return response()->json($tag, 201);
     }
 
-    // Mostrar una tag específica
-    public function show(Tag $tag)
+    // Mostrar un solo tag
+    public function show($id)
     {
-        return $tag;
+        $tag = Tag::findOrFail($id);
+        return response()->json($tag);
     }
 
-    // Actualizar una tag
-    public function update(Request $request, Tag $tag)
+    // Actualizar un tag
+    public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $tag = Tag::findOrFail($id);
+
+        $request->validate([
             'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
         ]);
 
-        $tag->update($validated);
+        $tag->update([
+            'name' => $request->name,
+        ]);
 
         return response()->json($tag);
     }
 
-    // Eliminar una tag
-    public function destroy(Tag $tag)
+    // Eliminar un tag
+    public function destroy($id)
     {
+        $tag = Tag::findOrFail($id);
         $tag->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Etiqueta eliminada']);
     }
 }
