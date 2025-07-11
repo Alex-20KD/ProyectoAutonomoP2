@@ -2,43 +2,17 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""Representa a una persona interesada en adoptar una mascota."""
-type Adoptante {
-  """Identificador único del adoptante."""
-  id: Int!
-
-  """Nombre completo del adoptante."""
-  nombre: String!
-
-  """Apellido(s) del adoptante."""
-  apellido: String!
-
-  """Correo electrónico único del adoptante."""
-  correo: String!
-
-  """Número de contacto telefónico del adoptante."""
-  telefono: String!
-
-  """Dirección completa de residencia del adoptante."""
-  direccion: String!
-
-  """Ciudad de residencia del adoptante."""
-  ciudad: String!
-
-  """País de residencia del adoptante."""
-  pais: String!
-
-  """Tipo de documento de identidad del adoptante (DNI, Pasaporte, etc.)."""
-  tipo_documento: String!
-
-  """Número del documento de identidad del adoptante."""
-  numero_documento: String!
-
-  """Fecha y hora en que el adoptante se registró en el sistema."""
-  fecha_registro: DateTime!
-
-  """Estado actual del adoptante en el sistema."""
-  estado: AdoptanteEstado!
+type AcuerdoAdopcion {
+  id: ID!
+  solicitudId: Int!
+  fechaAcuerdo: DateTime!
+  tipoAcuerdo: String!
+  duracionMeses: Int
+  fechaInicio: DateTime!
+  fechaFinEstimada: DateTime
+  condicionesEspeciales: String
+  estadoAcuerdo: String!
+  solicitud: SolicitudAdopcion!
 }
 
 """
@@ -46,55 +20,95 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-enum AdoptanteEstado {
-  ACTIVO
-  INACTIVO
-  SUSPENDIDO
-  PENDIENTE_VERIFICACION
+type SolicitudAdopcion {
+  id: ID!
+  adoptanteId: ID!
+  mascotaId: ID!
+  fechaSolicitud: DateTime!
+  estado: String!
+  tipoAdopcion: String!
+  comentariosAdoptante: String
+  fechaAprobacionRechazo: DateTime
+  motivoRechazo: String
+  adoptante: Adoptante!
+  mascota: Mascota!
+  acuerdosAdopcion: [AcuerdoAdopcion!]
 }
 
 type Mascota {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
+  name: String!
+  especie: String!
+  raza: String!
+  edad: Int!
+  genero: String!
+  descripcion: String!
+  foto_url: String!
+  estado_adopcion: Boolean!
+  adoptante: Adoptante
+  solicitudesAdopcion: [SolicitudAdopcion!]
 }
 
-type SolicitudAdopcion {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type HistorialAdoptante {
+  id: ID!
+  solicitud_id: Float!
+  adopciones_permanentes: Float!
+  adopciones_temporales: Float!
+  fecha_ultima_adopcion: DateTime!
+  calificacion: Float!
+  notas: String!
+  adoptante: Adoptante!
 }
 
 type VisitaDomiciliaria {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
+  adoptanteId: Int!
+  fechaVisita: DateTime!
+  direccionVerificada: String!
+  observaciones: String
+  resultado: String!
+  inspectorId: Int
+  adoptante: Adoptante!
 }
 
-type AcuerdoAdopcion {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-type HistorialAdopcione {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type Adoptante {
+  id: ID!
+  name: String!
+  email: String!
+  telefono: Int!
+  direccion: String!
+  tipo_documento: String!
+  numero_documento: Int!
+  fecha_registro: DateTime!
+  status: Boolean!
+  historial: HistorialAdoptante
+  mascotas: [Mascota!]
+  solicitudesAdopcion: [SolicitudAdopcion!]
+  visitasDomiciliarias: [VisitaDomiciliaria!]
 }
 
 type Query {
-  adoptante(id: Int!): Adoptante!
-  mascota(id: Int!): Mascota!
+  adoptantes: [Adoptante!]!
+  adoptante(id: Float!): Adoptante!
+  mascotas: [Mascota!]!
+  mascota(id: Float!): Mascota!
+  solicitudesAdopcion: [SolicitudAdopcion!]!
   solicitudAdopcion(id: Int!): SolicitudAdopcion!
+  visitasDomiciliarias: [VisitaDomiciliaria!]!
   visitaDomiciliaria(id: Int!): VisitaDomiciliaria!
+  acuerdosAdopcion: [AcuerdoAdopcion!]!
   acuerdoAdopcion(id: Int!): AcuerdoAdopcion!
-  historialAdopciones: [HistorialAdopcione!]!
-  historialAdopcione(id: Int!): HistorialAdopcione!
+  historialAdoptantes: [HistorialAdoptante!]!
+  historialAdoptante(id: Float!): HistorialAdoptante!
 }
 
 type Mutation {
   createAdoptante(createAdoptanteInput: CreateAdoptanteInput!): Adoptante!
   updateAdoptante(updateAdoptanteInput: UpdateAdoptanteInput!): Adoptante!
-  removeAdoptante(id: Int!): Adoptante!
+  removeAdoptante(id: Float!): Adoptante!
   createMascota(createMascotaInput: CreateMascotaInput!): Mascota!
   updateMascota(updateMascotaInput: UpdateMascotaInput!): Mascota!
-  removeMascota(id: Int!): Mascota!
+  removeMascota(id: Float!): Mascota!
   createSolicitudAdopcion(createSolicitudAdopcionInput: CreateSolicitudAdopcionInput!): SolicitudAdopcion!
   updateSolicitudAdopcion(updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput!): SolicitudAdopcion!
   removeSolicitudAdopcion(id: Int!): SolicitudAdopcion!
@@ -104,73 +118,122 @@ type Mutation {
   createAcuerdoAdopcion(createAcuerdoAdopcionInput: CreateAcuerdoAdopcionInput!): AcuerdoAdopcion!
   updateAcuerdoAdopcion(updateAcuerdoAdopcionInput: UpdateAcuerdoAdopcionInput!): AcuerdoAdopcion!
   removeAcuerdoAdopcion(id: Int!): AcuerdoAdopcion!
-  createHistorialAdopcione(createHistorialAdopcioneInput: CreateHistorialAdopcioneInput!): HistorialAdopcione!
-  updateHistorialAdopcione(updateHistorialAdopcioneInput: UpdateHistorialAdopcioneInput!): HistorialAdopcione!
-  removeHistorialAdopcione(id: Int!): HistorialAdopcione!
+  createHistorialAdoptante(createHistorialAdoptanteInput: CreateHistorialAdoptanteInput!): HistorialAdoptante!
+  updateHistorialAdoptante(updateHistorialAdoptanteInput: UpdateHistorialAdoptanteInput!): HistorialAdoptante!
+  removeHistorialAdoptante(id: Float!): HistorialAdoptante!
 }
 
 input CreateAdoptanteInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  email: String!
+  telefono: Int!
+  direccion: String!
+  tipo_documento: String!
+  numero_documento: Int!
 }
 
 input UpdateAdoptanteInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  email: String
+  telefono: Int
+  direccion: String
+  tipo_documento: String
+  numero_documento: Int
+  id: ID!
 }
 
 input CreateMascotaInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  especie: String!
+  raza: String!
+  edad: Int!
+  genero: String!
+  descripcion: String!
+  foto_url: String!
+  estado_adopcion: Boolean = true
 }
 
 input UpdateMascotaInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  especie: String
+  raza: String
+  edad: Int
+  genero: String
+  descripcion: String
+  foto_url: String
+  estado_adopcion: Boolean = true
+  id: ID!
 }
 
 input CreateSolicitudAdopcionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  adoptanteId: ID!
+  mascotaId: ID!
+  estado: String!
+  tipoAdopcion: String!
+  comentariosAdoptante: String
+  fechaAprobacionRechazo: DateTime
+  motivoRechazo: String
 }
 
 input UpdateSolicitudAdopcionInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  adoptanteId: ID
+  mascotaId: ID
+  estado: String
+  tipoAdopcion: String
+  comentariosAdoptante: String
+  fechaAprobacionRechazo: DateTime
+  motivoRechazo: String
+  id: ID!
 }
 
 input CreateVisitaDomiciliariaInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  adoptanteId: Int!
+  direccionVerificada: String!
+  observaciones: String
+  resultado: String!
+  inspectorId: Int
 }
 
 input UpdateVisitaDomiciliariaInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  id: ID!
 }
 
 input CreateAcuerdoAdopcionInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  solicitudId: Int!
+  tipoAcuerdo: String!
+  duracionMeses: Int
+  fechaInicio: DateTime!
+  fechaFinEstimada: DateTime
+  condicionesEspeciales: String
+  estadoAcuerdo: String
 }
 
 input UpdateAcuerdoAdopcionInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  solicitudId: Int
+  tipoAcuerdo: String
+  duracionMeses: Int
+  fechaInicio: DateTime
+  fechaFinEstimada: DateTime
+  condicionesEspeciales: String
+  estadoAcuerdo: String
+  id: ID!
 }
 
-input CreateHistorialAdopcioneInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+input CreateHistorialAdoptanteInput {
+  solicitud_id: Float!
+  adopciones_permanentes: Float!
+  adopciones_temporales: Float!
+  fecha_ultima_adopcion: DateTime!
+  calificacion: Int!
+  notas: String!
 }
 
-input UpdateHistorialAdopcioneInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+input UpdateHistorialAdoptanteInput {
+  solicitud_id: Float
+  adopciones_permanentes: Float
+  adopciones_temporales: Float
+  fecha_ultima_adopcion: DateTime
+  calificacion: Int
+  notas: String
   id: Int!
 }

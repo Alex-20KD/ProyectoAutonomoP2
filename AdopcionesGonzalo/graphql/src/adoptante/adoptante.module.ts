@@ -2,11 +2,11 @@ import { Module } from '@nestjs/common';
 import { AdoptanteService } from './adoptante.service';
 import { AdoptanteResolver } from './adoptante.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Adoptante } from './entities/adoptante.entity'; // Adjust the path as necessary
+import { Adoptante } from './entities/adoptante.entity'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Adoptante])],
   providers: [AdoptanteResolver, AdoptanteService],
-  exports: [AdoptanteService]
+  exports: [TypeOrmModule],
+  imports: [TypeOrmModule.forFeature([Adoptante])], // Aquí puedes importar otros módulos si es necesario
 })
 export class AdoptanteModule {}

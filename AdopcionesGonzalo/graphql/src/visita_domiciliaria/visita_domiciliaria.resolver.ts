@@ -1,35 +1,52 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql'; // Asegúrate de importar ID si lo usas en algún lugar, aunque aquí usamos Int
 import { VisitaDomiciliariaService } from './visita_domiciliaria.service';
-import { VisitaDomiciliaria } from './entities/visita_domiciliaria.entity';
-import { CreateVisitaDomiciliariaInput } from './dto/create-visita_domiciliaria.input';
-import { UpdateVisitaDomiciliariaInput } from './dto/update-visita_domiciliaria.input';
+import { VisitaDomiciliaria } from './entities/visita_domiciliaria.entity'; // Posible modificación de ruta
+import { CreateVisitaDomiciliariaInput } from './dto/create-visita_domiciliaria.input'; // Posible modificación de ruta
+import { UpdateVisitaDomiciliariaInput } from './dto/update-visita_domiciliaria.input'; // Posible modificación de ruta
 
 @Resolver(() => VisitaDomiciliaria)
 export class VisitaDomiciliariaResolver {
-  constructor(private readonly visitaDomiciliariaService: VisitaDomiciliariaService) {}
+  constructor(
+    private readonly visitaDomiciliariaService: VisitaDomiciliariaService,
+  ) {}
 
-  @Mutation(() => VisitaDomiciliaria)
-  createVisitaDomiciliaria(@Args('createVisitaDomiciliariaInput') createVisitaDomiciliariaInput: CreateVisitaDomiciliariaInput) {
+  @Mutation(() => VisitaDomiciliaria, { name: 'createVisitaDomiciliaria' })
+  createVisitaDomiciliaria(
+    @Args('createVisitaDomiciliariaInput')
+    createVisitaDomiciliariaInput: CreateVisitaDomiciliariaInput,
+  ): Promise<VisitaDomiciliaria> {
     return this.visitaDomiciliariaService.create(createVisitaDomiciliariaInput);
   }
 
-  @Query(() => [VisitaDomiciliaria], { name: 'visitaDomiciliaria' })
-  findAll() {
+  @Query(() => [VisitaDomiciliaria], { name: 'visitasDomiciliarias' }) // Nombre de la query en plural
+  findAll(): Promise<VisitaDomiciliaria[]> {
     return this.visitaDomiciliariaService.findAll();
   }
 
-  @Query(() => VisitaDomiciliaria, { name: 'visitaDomiciliaria' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => VisitaDomiciliaria, { name: 'visitaDomiciliaria' }) // Nombre de la query en singular
+  findOne(
+    @Args('id', { type: () => Int }) // Usamos Int para IDs numéricos
+    id: number,
+  ): Promise<VisitaDomiciliaria> {
     return this.visitaDomiciliariaService.findOne(id);
   }
 
-  @Mutation(() => VisitaDomiciliaria)
-  updateVisitaDomiciliaria(@Args('updateVisitaDomiciliariaInput') updateVisitaDomiciliariaInput: UpdateVisitaDomiciliariaInput) {
-    return this.visitaDomiciliariaService.update(updateVisitaDomiciliariaInput.id, updateVisitaDomiciliariaInput);
+  @Mutation(() => VisitaDomiciliaria, { name: 'updateVisitaDomiciliaria' })
+  updateVisitaDomiciliaria(
+    @Args('updateVisitaDomiciliariaInput')
+    updateVisitaDomiciliariaInput: UpdateVisitaDomiciliariaInput,
+  ): Promise<VisitaDomiciliaria> {
+    return this.visitaDomiciliariaService.update(
+      updateVisitaDomiciliariaInput.id, // El ID viene del DTO de actualización
+      updateVisitaDomiciliariaInput,
+    );
   }
 
-  @Mutation(() => VisitaDomiciliaria)
-  removeVisitaDomiciliaria(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => VisitaDomiciliaria, { name: 'removeVisitaDomiciliaria' })
+  removeVisitaDomiciliaria(
+    @Args('id', { type: () => Int }) // Usamos Int para IDs numéricos
+    id: number,
+  ): Promise<VisitaDomiciliaria> {
     return this.visitaDomiciliariaService.remove(id);
   }
 }

@@ -1,73 +1,67 @@
-// src/adoptante/entities/adoptante.entity.ts
-import { ObjectType, Field, Int, registerEnumType } from '@nestjs/graphql';
-import { Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { Mascota } from 'src/mascota/entities/mascota.entity';
+import { SolicitudAdopcion } from 'src/solicitud_adopcion/entities/solicitud_adopcion.entity';
+import { HistorialAdoptante } from 'src/historial_adopciones/entities/historial_adopcione.entity';
+import { VisitaDomiciliaria } from 'src/visita_domiciliaria/entities/visita_domiciliaria.entity';
+import { Column, Entity, OneToMany, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 
-export enum AdoptanteEstado {
-  ACTIVO = 'Activo',
-  INACTIVO = 'Inactivo',
-  SUSPENDIDO = 'Suspendido',
-  PENDIENTE_VERIFICACION = 'Pendiente_Verificacion',
-}
-
-registerEnumType(AdoptanteEstado, {
-  name: 'AdoptanteEstado', // Este será el nombre del ENUM en tu esquema GraphQL
-});
-
-@ObjectType({ description: 'Representa a una persona interesada en adoptar una mascota.' })
+@ObjectType()
 @Entity('Adoptante')
 export class Adoptante {
-  @Field(() => Int, { description: 'Identificador único del adoptante.' })
-  @PrimaryGeneratedColumn()
-  id: number;
 
-  @Field({ description: 'Nombre completo del adoptante.' })
+  @PrimaryGeneratedColumn('uuid')
+  @Field(() => ID)
+  id!: number;
+  
   @Column()
-  nombre: string;
+  @Field()
+  name!: string;
 
-  @Field({ description: 'Apellido(s) del adoptante.' })
   @Column()
-  apellido: string;
+  @Field()
+  email!: string;
 
-  @Field({ description: 'Correo electrónico único del adoptante.' })
-  @Column({ unique: true })
-  correo: string;
-
-  @Field({ description: 'Número de contacto telefónico del adoptante.' })
-  @Column({ length: 20 })
-  telefono: string;
-
-  @Field({ description: 'Dirección completa de residencia del adoptante.' })
-  @Column('text')
-  direccion: string;
-
-  @Field({ description: 'Ciudad de residencia del adoptante.' })
-  @Column({ length: 100 })
-  ciudad: string;
-
-  @Field({ description: 'País de residencia del adoptante.' })
-  @Column({ length: 100 })
-  pais: string;
-
-  @Field({ description: 'Tipo de documento de identidad del adoptante (DNI, Pasaporte, etc.).' })
   @Column()
-  tipo_documento: string;
+  @Field(() => Int)
+  telefono!: number;
 
-  @Field({ description: 'Número del documento de identidad del adoptante.' })
-  @Column({ length: 50, unique: true })
-  numero_documento: string;
+  @Column()
+  @Field()
+  direccion!: string;
 
-  @Field({ description: 'Fecha y hora en que el adoptante se registró en el sistema.' })
+  @Column()
+  @Field()
+  tipo_documento!: string;
+
+  @Column()
+  @Field(() => Int)
+  numero_documento!: number;
+
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-  fecha_registro: Date;
+  @Field()
+  fecha_registro!: Date;
 
-  @Field(() => AdoptanteEstado, { description: 'Estado actual del adoptante en el sistema.' })
-  @Column({
-    type: 'varchar', // <-- ¡CAMBIO AQUÍ! Usar varchar o text para SQLite
-    // Puedes mantener 'enum' aquí para la validación del lado de TypeORM si lo deseas,
-    // pero el tipo de columna en la DB será 'varchar'.
-    // Alternativamente, puedes eliminar 'enum' y solo especificar 'varchar'
-    enum: AdoptanteEstado, // Esto le dice a TypeORM los valores válidos
-    default: AdoptanteEstado.PENDIENTE_VERIFICACION
-  })
-  estado: AdoptanteEstado;
+  @Column({ default: true })
+  @Field()
+  status!: boolean;
+
+  @OneToOne(() => HistorialAdoptante, (historial) => historial.adoptante, { cascade: true })
+  @JoinColumn()
+  @Field(() => HistorialAdoptante, { nullable: true })
+  historial: HistorialAdoptante;
+  
+  // --- AÑADE ESTA RELACIÓN UNO-A-MUCHOS ---
+  @OneToMany(() => Mascota, (mascota) => mascota.adoptante)
+  @Field(() => [Mascota], { nullable: true })
+  mascotas: Mascota[];
+
+  // Relación OneToMany con SolicitudAdopcion
+  @OneToMany(() => SolicitudAdopcion, (solicitud) => solicitud.adoptante)
+  @Field(() => [SolicitudAdopcion], { nullable: true })
+  solicitudesAdopcion?: SolicitudAdopcion[];
+
+  // --- AÑADE ESTA RELACIÓN UNO-A-MUCHOS ---
+  @OneToMany(() => VisitaDomiciliaria, (visita) => visita.adoptante)
+  @Field(() => [VisitaDomiciliaria], { nullable: true })
+  visitasDomiciliarias?: VisitaDomiciliaria[];
 }

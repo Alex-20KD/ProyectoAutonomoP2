@@ -1,8 +1,11 @@
 import { CreateAdoptanteInput } from './create-adoptante.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
-
+import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
+import { IsUUID } from 'class-validator';
 @InputType()
 export class UpdateAdoptanteInput extends PartialType(CreateAdoptanteInput) {
-  @Field(() => Int)
+
+  @Field(() => ID)
+  @IsUUID()
   id: number;
+
 }

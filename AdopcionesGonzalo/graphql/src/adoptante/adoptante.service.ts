@@ -1,26 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { CreateAdoptanteInput } from './dto/create-adoptante.input';
 import { UpdateAdoptanteInput } from './dto/update-adoptante.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Adoptante } from './entities/adoptante.entity';
 
 @Injectable()
 export class AdoptanteService {
-  create(createAdoptanteInput: CreateAdoptanteInput) {
-    return 'This action adds a new adoptante';
+
+  constructor(
+
+    @InjectRepository(Adoptante)
+    private readonly AdoptantesRepository: Repository<Adoptante>
+  ) {
+
+  }
+  async create(createAdoptanteInput: CreateAdoptanteInput): Promise<Adoptante> {
+    
+    const created = this.AdoptantesRepository.create(createAdoptanteInput);
+    return await this.AdoptantesRepository.save(created);
+
+    }
+
+  async findAll(): Promise<Adoptante[]> {
+    return await this.AdoptantesRepository.find();
   }
 
-  findAll() {
-    return `This action returns all adoptante`;
+  async findOne(id: number) {
+
+    return await this.AdoptantesRepository.findOne({where:{id}});
+
+    }
+
+  async update(id: number, updateAdoptanteInput: UpdateAdoptanteInput): Promise<Adoptante> {
+
+    const updated = await this.AdoptantesRepository.preload(updateAdoptanteInput);
+    if (!updated) {
+      throw new Error(`Adoptante with id ${id} not found`);
+      }
+    return await this.AdoptantesRepository.save(updated);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} adoptante`;
-  }
+  async remove(id: number):  Promise<Adoptante> {
 
-  update(id: number, updateAdoptanteInput: UpdateAdoptanteInput) {
-    return `This action updates a #${id} adoptante`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} adoptante`;
+    const removed = await this.AdoptantesRepository.findOne({where:{id}});
+    if (!removed) {
+      throw new Error(`Adoptante with id ${id} not found`);
+    }
+    return await this.AdoptantesRepository.remove(removed);
   }
 }

@@ -6,7 +6,7 @@ import { MascotaModule } from './mascota/mascota.module';
 import { SolicitudAdopcionModule } from './solicitud_adopcion/solicitud_adopcion.module';
 import { VisitaDomiciliariaModule } from './visita_domiciliaria/visita_domiciliaria.module';
 import { AcuerdoAdopcionModule } from './acuerdo_adopcion/acuerdo_adopcion.module';
-import { HistorialAdopcionesModule } from './historial_adopciones/historial_adopciones.module';
+import { HistorialAdoptanteModule } from './historial_adopciones/historial_adopciones.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';  // Assuming you're using TypeORM for database interactions
 import { GraphQLModule } from '@nestjs/graphql';
@@ -32,7 +32,7 @@ import { join } from 'path';  // For path manipulation
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
-    AdoptanteModule, MascotaModule, SolicitudAdopcionModule, VisitaDomiciliariaModule, AcuerdoAdopcionModule, HistorialAdopcionesModule],
+    AdoptanteModule, MascotaModule, SolicitudAdopcionModule, VisitaDomiciliariaModule, AcuerdoAdopcionModule, HistorialAdoptanteModule],
   controllers: [AppController],
   providers: [AppService],
 })

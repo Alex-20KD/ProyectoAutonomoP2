@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
-import { HistorialAdopcionesService } from './historial_adopciones.service';
-import { HistorialAdopcionesResolver } from './historial_adopciones.resolver';
+import { HistorialAdoptanteService } from './historial_adopciones.service';
+import { HistorialAdoptanteResolver } from './historial_adopciones.resolver';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HistorialAdoptante } from './entities/historial_adopcione.entity';
 
 @Module({
-  providers: [HistorialAdopcionesResolver, HistorialAdopcionesService],
+  providers: [HistorialAdoptanteResolver, HistorialAdoptanteService],
+  exports: [TypeOrmModule],
+  imports: [TypeOrmModule.forFeature([HistorialAdoptante])], // Aquí puedes importar otros módulos si es necesario
 })
-export class HistorialAdopcionesModule {}
+export class HistorialAdoptanteModule {}

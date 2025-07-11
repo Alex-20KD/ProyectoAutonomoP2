@@ -1,35 +1,39 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
 import { SolicitudAdopcionService } from './solicitud_adopcion.service';
-import { SolicitudAdopcion } from './entities/solicitud_adopcion.entity';
-import { CreateSolicitudAdopcionInput } from './dto/create-solicitud_adopcion.input';
-import { UpdateSolicitudAdopcionInput } from './dto/update-solicitud_adopcion.input';
+import { SolicitudAdopcion } from './entities/solicitud_adopcion.entity'; // Posible modificación de ruta
+import { CreateSolicitudAdopcionInput } from './dto/create-solicitud_adopcion.input'; // Posible modificación de ruta
+import { UpdateSolicitudAdopcionInput } from './dto/update-solicitud_adopcion.input'; // Posible modificación de ruta
 
 @Resolver(() => SolicitudAdopcion)
 export class SolicitudAdopcionResolver {
-  constructor(private readonly solicitudAdopcionService: SolicitudAdopcionService) {}
+  constructor( private readonly solicitudAdopcionService: SolicitudAdopcionService) {}
 
-  @Mutation(() => SolicitudAdopcion)
-  createSolicitudAdopcion(@Args('createSolicitudAdopcionInput') createSolicitudAdopcionInput: CreateSolicitudAdopcionInput) {
+  @Mutation(() => SolicitudAdopcion, { name: 'createSolicitudAdopcion' })
+  createSolicitudAdopcion(@Args('createSolicitudAdopcionInput') createSolicitudAdopcionInput: CreateSolicitudAdopcionInput)
+  : Promise<SolicitudAdopcion> {
     return this.solicitudAdopcionService.create(createSolicitudAdopcionInput);
   }
 
-  @Query(() => [SolicitudAdopcion], { name: 'solicitudAdopcion' })
-  findAll() {
+  @Query(() => [SolicitudAdopcion], { name: 'solicitudesAdopcion' }) // Nombre de la query en plural
+  findAll(): Promise<SolicitudAdopcion[]> {
     return this.solicitudAdopcionService.findAll();
   }
 
-  @Query(() => SolicitudAdopcion, { name: 'solicitudAdopcion' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => SolicitudAdopcion, { name: 'solicitudAdopcion' }) // Nombre de la query en singular
+  findOne(@Args('id', { type: () => Int }) id: number,)
+  : Promise<SolicitudAdopcion> {
     return this.solicitudAdopcionService.findOne(id);
   }
 
-  @Mutation(() => SolicitudAdopcion)
-  updateSolicitudAdopcion(@Args('updateSolicitudAdopcionInput') updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput) {
+  @Mutation(() => SolicitudAdopcion, { name: 'updateSolicitudAdopcion' })
+  updateSolicitudAdopcion(@Args('updateSolicitudAdopcionInput') updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput)
+  : Promise<SolicitudAdopcion> {
     return this.solicitudAdopcionService.update(updateSolicitudAdopcionInput.id, updateSolicitudAdopcionInput);
   }
 
-  @Mutation(() => SolicitudAdopcion)
-  removeSolicitudAdopcion(@Args('id', { type: () => Int }) id: number) {
+  @Mutation(() => SolicitudAdopcion, { name: 'removeSolicitudAdopcion' })
+  removeSolicitudAdopcion(@Args('id', { type: () => Int }) id: number,)
+  : Promise<SolicitudAdopcion> {
     return this.solicitudAdopcionService.remove(id);
   }
 }

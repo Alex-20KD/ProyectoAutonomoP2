@@ -1,26 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSolicitudAdopcionInput } from './dto/create-solicitud_adopcion.input';
-import { UpdateSolicitudAdopcionInput } from './dto/update-solicitud_adopcion.input';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SolicitudAdopcion } from './entities/solicitud_adopcion.entity'; // Posible modificación de ruta
+import { CreateSolicitudAdopcionInput } from './dto/create-solicitud_adopcion.input'; // Posible modificación de ruta
+import { UpdateSolicitudAdopcionInput } from './dto/update-solicitud_adopcion.input'; // Posible modificación de ruta
 
 @Injectable()
 export class SolicitudAdopcionService {
-  create(createSolicitudAdopcionInput: CreateSolicitudAdopcionInput) {
-    return 'This action adds a new solicitudAdopcion';
+  constructor(
+    @InjectRepository(SolicitudAdopcion)
+    private readonly solicitudAdopcionRepository: Repository<SolicitudAdopcion>,
+  ) {}
+
+  async create(
+    createSolicitudAdopcionInput: CreateSolicitudAdopcionInput,
+  ): Promise<SolicitudAdopcion> {
+    const newSolicitud = this.solicitudAdopcionRepository.create(
+      createSolicitudAdopcionInput,
+    );
+    return await this.solicitudAdopcionRepository.save(newSolicitud);
   }
 
-  findAll() {
-    return `This action returns all solicitudAdopcion`;
+  async findAll(): Promise<SolicitudAdopcion[]> {
+    return await this.solicitudAdopcionRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} solicitudAdopcion`;
+  async findOne(id: number): Promise<SolicitudAdopcion> {
+    const solicitud = await this.solicitudAdopcionRepository.findOne({
+      where: { id },
+    });
+    if (!solicitud) {
+      throw new NotFoundException(
+        `Solicitud de adopción con ID "${id}" no encontrada.`,
+      );
+    }
+    return solicitud;
   }
 
-  update(id: number, updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput) {
-    return `This action updates a #${id} solicitudAdopcion`;
+  async update(
+    id: number,
+    updateSolicitudAdopcionInput: UpdateSolicitudAdopcionInput,
+  ): Promise<SolicitudAdopcion> {
+    const solicitudToUpdate = await this.solicitudAdopcionRepository.preload({
+      ...updateSolicitudAdopcionInput,
+    });
+
+    if (!solicitudToUpdate) {
+      throw new NotFoundException(
+        `Solicitud de adopción con ID "${id}" no encontrada.`,
+      );
+    }
+    return await this.solicitudAdopcionRepository.save(solicitudToUpdate);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} solicitudAdopcion`;
+  async remove(id: number): Promise<SolicitudAdopcion> {
+    const solicitudToRemove = await this.solicitudAdopcionRepository.findOne({
+      where: { id },
+    });
+    if (!solicitudToRemove) {
+      throw new NotFoundException(
+        `Solicitud de adopción con ID "${id}" no encontrada.`,
+      );
+    }
+    await this.solicitudAdopcionRepository.remove(solicitudToRemove);
+    return solicitudToRemove;
   }
 }

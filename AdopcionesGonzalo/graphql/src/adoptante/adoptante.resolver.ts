@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { AdoptanteService } from './adoptante.service';
 import { Adoptante } from './entities/adoptante.entity';
 import { CreateAdoptanteInput } from './dto/create-adoptante.input';
@@ -9,27 +9,29 @@ export class AdoptanteResolver {
   constructor(private readonly adoptanteService: AdoptanteService) {}
 
   @Mutation(() => Adoptante)
-  createAdoptante(@Args('createAdoptanteInput') createAdoptanteInput: CreateAdoptanteInput) {
+  createAdoptante(@Args('createAdoptanteInput') createAdoptanteInput: CreateAdoptanteInput)
+  : Promise<Adoptante> {
     return this.adoptanteService.create(createAdoptanteInput);
   }
 
-  @Query(() => [Adoptante], { name: 'adoptante' })
-  findAll() {
+  @Query(() => [Adoptante], { name: 'adoptantes' })
+  findAll(): Promise<Adoptante[]> {
     return this.adoptanteService.findAll();
   }
 
   @Query(() => Adoptante, { name: 'adoptante' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => Number }) id: number) {
     return this.adoptanteService.findOne(id);
   }
 
   @Mutation(() => Adoptante)
-  updateAdoptante(@Args('updateAdoptanteInput') updateAdoptanteInput: UpdateAdoptanteInput) {
+  updateAdoptante(@Args('updateAdoptanteInput') updateAdoptanteInput: UpdateAdoptanteInput)
+  : Promise<Adoptante> {
     return this.adoptanteService.update(updateAdoptanteInput.id, updateAdoptanteInput);
   }
 
   @Mutation(() => Adoptante)
-  removeAdoptante(@Args('id', { type: () => Int }) id: number) {
+  removeAdoptante(@Args('id', { type: () => Number}) id: number): Promise<Adoptante> {
     return this.adoptanteService.remove(id);
   }
 }

@@ -1,35 +1,37 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { HistorialAdopcionesService } from './historial_adopciones.service';
-import { HistorialAdopcione } from './entities/historial_adopcione.entity';
-import { CreateHistorialAdopcioneInput } from './dto/create-historial_adopcione.input';
-import { UpdateHistorialAdopcioneInput } from './dto/update-historial_adopcione.input';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { HistorialAdoptanteService } from './historial_adopciones.service';
+import { HistorialAdoptante } from './entities/historial_adopcione.entity';
+import { CreateHistorialAdoptanteInput } from './dto/create-historial_adopcione.input';
+import { UpdateHistorialAdoptanteInput } from './dto/update-historial_adopcione.input';
 
-@Resolver(() => HistorialAdopcione)
-export class HistorialAdopcionesResolver {
-  constructor(private readonly historialAdopcionesService: HistorialAdopcionesService) {}
+@Resolver(() => HistorialAdoptante)
+export class HistorialAdoptanteResolver {
+  constructor(private readonly historialAdoptanteService: HistorialAdoptanteService) {}
 
-  @Mutation(() => HistorialAdopcione)
-  createHistorialAdopcione(@Args('createHistorialAdopcioneInput') createHistorialAdopcioneInput: CreateHistorialAdopcioneInput) {
-    return this.historialAdopcionesService.create(createHistorialAdopcioneInput);
+  @Mutation(() => HistorialAdoptante)
+  createHistorialAdoptante(@Args('createHistorialAdoptanteInput') createHistorialAdoptanteInput: CreateHistorialAdoptanteInput)
+  : Promise<HistorialAdoptante> {
+    return this.historialAdoptanteService.create(createHistorialAdoptanteInput);
   }
 
-  @Query(() => [HistorialAdopcione], { name: 'historialAdopciones' })
-  findAll() {
-    return this.historialAdopcionesService.findAll();
+  @Query(() => [HistorialAdoptante], { name: 'historialAdoptantes' })
+  findAll(): Promise<HistorialAdoptante[]> {
+    return this.historialAdoptanteService.findAll();
   }
 
-  @Query(() => HistorialAdopcione, { name: 'historialAdopcione' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.historialAdopcionesService.findOne(id);
+  @Query(() => HistorialAdoptante, { name: 'historialAdoptante' })
+  findOne(@Args('id', { type: () => Number }) id: number) {
+    return this.historialAdoptanteService.findOne(id);
   }
 
-  @Mutation(() => HistorialAdopcione)
-  updateHistorialAdopcione(@Args('updateHistorialAdopcioneInput') updateHistorialAdopcioneInput: UpdateHistorialAdopcioneInput) {
-    return this.historialAdopcionesService.update(updateHistorialAdopcioneInput.id, updateHistorialAdopcioneInput);
+  @Mutation(() => HistorialAdoptante)
+  updateHistorialAdoptante(@Args('updateHistorialAdoptanteInput') updateHistorialAdoptanteInput: UpdateHistorialAdoptanteInput)
+  : Promise<HistorialAdoptante> {
+    return this.historialAdoptanteService.update(updateHistorialAdoptanteInput.id, updateHistorialAdoptanteInput);
   }
 
-  @Mutation(() => HistorialAdopcione)
-  removeHistorialAdopcione(@Args('id', { type: () => Int }) id: number) {
-    return this.historialAdopcionesService.remove(id);
+  @Mutation(() => HistorialAdoptante)
+  removeHistorialAdoptante(@Args('id', { type: () => Number }) id: number): Promise<HistorialAdoptante> {
+    return this.historialAdoptanteService.remove(id);
   }
 }
