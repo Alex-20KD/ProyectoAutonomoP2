@@ -7,7 +7,7 @@ namespace GraphQLProject.GraphQL.Queries
     public class Query
     {
         // Query para obtener todos los autores
-        public async Task<IQueryable<Author>> GetAuthors([Service] ApplicationDbContext context)
+        public IQueryable<Author> GetAuthors([Service] ApplicationDbContext context)
         {
             return context.Authors.Include(a => a.Books);
         }
@@ -21,7 +21,7 @@ namespace GraphQLProject.GraphQL.Queries
         }
 
         // Query para obtener todos los libros
-        public async Task<IQueryable<Book>> GetBooks([Service] ApplicationDbContext context)
+        public IQueryable<Book> GetBooks([Service] ApplicationDbContext context)
         {
             return context.Books.Include(b => b.Author);
         }
@@ -35,7 +35,7 @@ namespace GraphQLProject.GraphQL.Queries
         }
 
         // Query para buscar libros por título
-        public async Task<IQueryable<Book>> SearchBooks([Service] ApplicationDbContext context, string searchTerm)
+        public IQueryable<Book> SearchBooks([Service] ApplicationDbContext context, string searchTerm)
         {
             return context.Books
                 .Include(b => b.Author)
@@ -43,7 +43,7 @@ namespace GraphQLProject.GraphQL.Queries
         }
 
         // Query para obtener libros por autor
-        public async Task<IQueryable<Book>> GetBooksByAuthor([Service] ApplicationDbContext context, int authorId)
+        public IQueryable<Book> GetBooksByAuthor([Service] ApplicationDbContext context, int authorId)
         {
             return context.Books
                 .Include(b => b.Author)

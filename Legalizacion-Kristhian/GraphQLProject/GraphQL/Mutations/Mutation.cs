@@ -2,6 +2,7 @@ using GraphQLProject.Data;
 using GraphQLProject.Models;
 using GraphQLProject.GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
+using HotChocolate;
 
 namespace GraphQLProject.GraphQL.Mutations
 {

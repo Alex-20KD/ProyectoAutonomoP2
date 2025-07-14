@@ -1,0 +1,50 @@
+using Yarp.ReverseProxy.Configuration;
+
+namespace GraphQLProject.Gateway
+{
+    public class InMemoryConfigProvider : IProxyConfigProvider
+    {
+        private volatile InMemoryConfig _config;
+
+        public InMemoryConfigProvider()
+        {
+            // Configuración inicial
+            _config = new InMemoryConfig(
+                ApiGatewayConfiguration.GetRoutes(),
+                ApiGatewayConfiguration.GetClusters()
+            );
+        }
+
+        public IProxyConfig GetConfig() => _config;
+
+        public void Update(IReadOnlyList<RouteConfig> routes, IReadOnlyList<ClusterConfig> clusters)
+        {
+            var oldConfig = _config;
+            _config = new InMemoryConfig(routes, clusters);
+            oldConfig.SignalChange();
+        }
+
+        private class InMemoryConfig : IProxyConfig
+        {
+            private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+            public InMemoryConfig(IReadOnlyList<RouteConfig> routes, IReadOnlyList<ClusterConfig> clusters)
+            {
+                Routes = routes;
+                Clusters = clusters;
+                ChangeToken = new CancellationChangeToken(_cts.Token);
+            }
+
+            public IReadOnlyList<RouteConfig> Routes { get; }
+
+            public IReadOnlyList<ClusterConfig> Clusters { get; }
+
+            public IChangeToken ChangeToken { get; }
+
+            internal void SignalChange()
+            {
+                _cts.Cancel();
+            }
+        }
+    }
+}

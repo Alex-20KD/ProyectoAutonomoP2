@@ -14,10 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services
     .AddGraphQLServer()
     .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
-    .AddProjections()
-    .AddFiltering()
-    .AddSorting();
+    .AddMutationType<Mutation>();
 
 // Configurar CORS
 builder.Services.AddCors(options =>
