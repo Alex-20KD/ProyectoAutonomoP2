@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: mascotasdb
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./postgres/postgres:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+
+  mascotas-api:
+    build: ./mascotas
+    depends_on:
+      - postgres-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/mascotasdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+
+  graphql-gateway:
+    build: ./graphql-gateway
+    depends_on:
+      - mascotas-api
+    ports:
+      - "4000:4000" 
