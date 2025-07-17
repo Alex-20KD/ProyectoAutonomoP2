@@ -3,10 +3,11 @@ import { AdoptanteService } from './adoptante.service';
 import { AdoptanteResolver } from './adoptante.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Adoptante } from './entities/adoptante.entity'
+import { HttpModule } from '@nestjs/axios'; // Importa HttpModule para hacer peticiones HTTP
 
 @Module({
   providers: [AdoptanteResolver, AdoptanteService],
   exports: [TypeOrmModule],
-  imports: [TypeOrmModule.forFeature([Adoptante])], // Aquí puedes importar otros módulos si es necesario
+  imports: [TypeOrmModule.forFeature([Adoptante]),HttpModule] // Aquí puedes importar otros módulos si es necesario
 })
 export class AdoptanteModule {}
