@@ -17,10 +17,12 @@ class ResourceController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-            'path' => 'required|string',
-            'type' => 'required|string|max:100',
-            'post_id' => 'nullable|integer|exists:posts,id',
+            'post_id' => 'required|exists:posts,id',
+            'resource_type_id' => 'nullable|exists:resource_types,id',
+            'filename' => 'required|string|max:255',
+            'filepath' => 'required|string',
+            'mime_type' => 'required|string',
+            'size' => 'nullable|integer',
         ]);
 
         $resource = Resource::create($request->all());
@@ -46,10 +48,12 @@ class ResourceController extends Controller
         }
 
         $request->validate([
-            'title' => 'sometimes|required|string|max:255',
-            'path' => 'sometimes|required|string',
-            'type' => 'sometimes|required|string|max:100',
-            'post_id' => 'nullable|integer|exists:posts,id',
+            'post_id' => 'sometimes|exists:posts,id',
+            'resource_type_id' => 'nullable|exists:resource_types,id',
+            'filename' => 'sometimes|string|max:255',
+            'filepath' => 'sometimes|string',
+            'mime_type' => 'sometimes|string',
+            'size' => 'nullable|integer',
         ]);
 
         $resource->update($request->all());

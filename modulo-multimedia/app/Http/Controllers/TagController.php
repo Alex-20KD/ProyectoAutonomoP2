@@ -7,55 +7,65 @@ use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
-    // Listar todos los tags
+    // Listar todas las etiquetas
     public function index()
     {
         return response()->json(Tag::all());
     }
 
-    // Crear un nuevo tag
+    // Crear una nueva etiqueta
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
+        $validated = $request->validate([
+            'name' => 'required|string|unique:tags,name',
         ]);
 
-        $tag = Tag::create([
-            'name' => $request->name,
-        ]);
+        $tag = Tag::create($validated);
 
         return response()->json($tag, 201);
     }
 
-    // Mostrar un solo tag
-    public function show($id)
+    // Mostrar una etiqueta específica
+    public function show(string $id)
     {
-        $tag = Tag::findOrFail($id);
-        return response()->json($tag);
-    }
+        $tag = Tag::find($id);
 
-    // Actualizar un tag
-    public function update(Request $request, $id)
-    {
-        $tag = Tag::findOrFail($id);
-
-        $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name,' . $tag->id,
-        ]);
-
-        $tag->update([
-            'name' => $request->name,
-        ]);
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
 
         return response()->json($tag);
     }
 
-    // Eliminar un tag
-    public function destroy($id)
+    // Actualizar una etiqueta
+    public function update(Request $request, string $id)
     {
-        $tag = Tag::findOrFail($id);
+        $tag = Tag::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
+        $validated = $request->validate([
+            'name' => 'required|string|unique:tags,name,' . $id,
+        ]);
+
+        $tag->update($validated);
+
+        return response()->json($tag);
+    }
+
+    // Eliminar una etiqueta
+    public function destroy(string $id)
+    {
+        $tag = Tag::find($id);
+
+        if (!$tag) {
+            return response()->json(['message' => 'Etiqueta no encontrada'], 404);
+        }
+
         $tag->delete();
 
-        return response()->json(['message' => 'Etiqueta eliminada']);
+        return response()->json(['message' => 'Etiqueta eliminada correctamente']);
     }
 }
