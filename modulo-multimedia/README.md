@@ -61,4 +61,4 @@ Los datos se guardan correctamente en la base de datos, y las relaciones entre t
 Este módulo representa uno de los microservicios del sistema. Será consumido por el API Gateway GraphQL, y en próximas fases se conectará con el servicio de WebSockets para emitir notificaciones en tiempo real (por ejemplo, cuando se cree un nuevo post o comentario).
 
 Modulo creado por :Carlos Alberto Delgado Campuzano , 5to "A"
-Aplicaciones para el Servidor Web
+Aplicaciones para el Servidor Web 
