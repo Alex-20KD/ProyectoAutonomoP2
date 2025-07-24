@@ -1,23 +1,23 @@
+// adoptante/src/adoptante/adoptante.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Adoptante } from './entities/adoptante.entity';
 import { CreateAdoptanteDto } from './dto/create-adoptante.dto';
 import { UpdateAdoptanteDto } from './dto/update-adoptante.dto';
-import { HttpService } from '@nestjs/axios';
+import { HttpService } from '@nestjs/axios'; // ¡Asegúrate que se importa desde @nestjs/axios!
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AdoptanteService {
   // URL del servicio de notificaciones WebSocket
+  // Asegúrate de que este URL sea correcto para tu servicio de notificaciones real
   private readonly NOTIFICATION_SERVICE_URL = 'http://localhost:8000/api/v1/notify';
 
   constructor(
     @InjectRepository(Adoptante)
     private readonly adoptantesRepository: Repository<Adoptante>,
-    // Inyección de HttpService para realizar llamadas HTTP
-    private readonly httpService: HttpService,
-    // ¡CORRECCIÓN CLAVE AQUÍ! Inyección del repositorio
+    private readonly httpService: HttpService, // Esta inyección está correcta
   ) {}
 
   async create(createAdoptanteDto: CreateAdoptanteDto): Promise<Adoptante> {
@@ -34,15 +34,15 @@ export class AdoptanteService {
         }),
       );
     } catch (error) {
+      // Manejo de errores para la notificación
       console.error('Error al enviar notificación de adoptante creado:', error.response?.data || error.message);
     }
 
     return savedAdoptante;
   }
 
-  // >>> ASEGÚRATE DE QUE ESTE MÉTODO ESTÉ CORRECTO PARA DEVOLVER DATOS DE LA DB <<<
   findAll(): Promise<Adoptante[]> {
-    return this.adoptantesRepository.find(); // ¡Esto es lo crucial!
+    return this.adoptantesRepository.find();
   }
 
   async findOne(id: number): Promise<Adoptante> {
@@ -54,14 +54,15 @@ export class AdoptanteService {
   }
 
   async update(id: number, updateAdoptanteDto: UpdateAdoptanteDto): Promise<Adoptante> {
-    const updated = await this.adoptantesRepository.preload({
-      ...updateAdoptanteDto,
-    });
-
-    if (!updated) {
-      throw new NotFoundException(`Adoptante con ID "${id}" no encontrado.`);
+    const adoptanteToUpdate = await this.adoptantesRepository.findOne({ where: { id } });
+    if (!adoptanteToUpdate) {
+        throw new NotFoundException(`Adoptante con ID "${id}" no encontrado.`);
     }
-    const savedAdoptante = await this.adoptantesRepository.save(updated);
+
+    // Aplica las actualizaciones al objeto encontrado
+    const updatedAdoptante = this.adoptantesRepository.merge(adoptanteToUpdate, updateAdoptanteDto);
+    const savedAdoptante = await this.adoptantesRepository.save(updatedAdoptante);
+
 
     // Envío de notificación al servicio WebSocket tras actualización
     try {
