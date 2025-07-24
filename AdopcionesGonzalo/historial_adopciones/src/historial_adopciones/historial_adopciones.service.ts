@@ -1,26 +1,102 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { HistorialAdopcione } from './entities/historial_adopcione.entity';
 import { CreateHistorialAdopcioneDto } from './dto/create-historial_adopcione.dto';
 import { UpdateHistorialAdopcioneDto } from './dto/update-historial_adopcione.dto';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
-export class HistorialAdopcionesService {
-  create(createHistorialAdopcioneDto: CreateHistorialAdopcioneDto) {
-    return 'This action adds a new historialAdopcione';
+export class HistorialAdopcioneService {
+  // URL del servicio de notificaciones WebSocket
+  private readonly NOTIFICATION_SERVICE_URL = 'http://localhost:8000/api/v1/notify'; // Ajusta si es necesario
+
+  constructor(
+    @InjectRepository(HistorialAdopcione)
+    private readonly HistorialAdopcioneRepository: Repository<HistorialAdopcione>,
+    // Inyección de HttpService para realizar llamadas HTTP
+    private readonly httpService: HttpService,
+  ) {}
+
+  async create(createHistorialAdopcioneDto: CreateHistorialAdopcioneDto): Promise<HistorialAdopcione> { // Nombre de la variable corregido
+    const created = this.HistorialAdopcioneRepository.create(createHistorialAdopcioneDto);
+    const savedHistorial = await this.HistorialAdopcioneRepository.save(created);
+
+    // Envío de notificación al servicio WebSocket
+    try {
+      await firstValueFrom(
+        this.httpService.post(this.NOTIFICATION_SERVICE_URL, {
+          type: 'historial_creado', // Tipo de evento
+          data: savedHistorial, // Datos del evento
+          service: 'microservice-historial-adoptante', // Origen del evento
+        }),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de historial creado:', error.response?.data || error.message);
+    }
+
+    return savedHistorial;
   }
 
-  findAll() {
-    return `This action returns all historialAdopciones`;
+  async findAll(): Promise<HistorialAdopcione[]> {
+    return await this.HistorialAdopcioneRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} historialAdopcione`;
+  async findOne(id: number): Promise<HistorialAdopcione> { // ID es number por UUID
+    const historial = await this.HistorialAdopcioneRepository.findOne({ where: { id } });
+    if (!historial) {
+      throw new NotFoundException(`Historial de adoptante con ID "${id}" no encontrado.`);
+    }
+    return historial;
   }
 
-  update(id: number, updateHistorialAdopcioneDto: UpdateHistorialAdopcioneDto) {
-    return `This action updates a #${id} historialAdopcione`;
+  async update(id: number, updateHistorialAdopcioneDto: UpdateHistorialAdopcioneDto): Promise<HistorialAdopcione> { // ID es number por UUID
+    const updated = await this.HistorialAdopcioneRepository.preload({
+      ...updateHistorialAdopcioneDto,
+    });
+
+    if (!updated) {
+      throw new NotFoundException(`Historial de adoptante con ID "${id}" no encontrado.`);
+    }
+    const savedHistorial = await this.HistorialAdopcioneRepository.save(updated);
+
+    // Envío de notificación al servicio WebSocket tras actualización
+    try {
+      await firstValueFrom(
+        this.httpService.post(this.NOTIFICATION_SERVICE_URL, {
+          type: 'historial_actualizado',
+          data: savedHistorial,
+          service: 'microservice-historial-adoptante',
+        }),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de historial actualizado:', error.response?.data || error.message);
+    }
+
+    return savedHistorial;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} historialAdopcione`;
+  async remove(id: number): Promise<HistorialAdopcione> { // ID es number por UUID
+    const removed = await this.HistorialAdopcioneRepository.findOne({ where: { id } });
+    if (!removed) {
+      throw new NotFoundException(`Historial de adoptante con ID "${id}" no encontrado.`);
+    }
+    await this.HistorialAdopcioneRepository.remove(removed);
+
+    // Envío de notificación al servicio WebSocket tras eliminación
+    try {
+      await firstValueFrom(
+        this.httpService.post(this.NOTIFICATION_SERVICE_URL, {
+          type: 'historial_eliminado',
+          data: { id: removed.id }, // Envía datos básicos para identificar lo eliminado
+          service: 'microservice-historial-adoptante',
+        }),
+      );
+    } catch (error) {
+      console.error('Error al enviar notificación de historial eliminado:', error.response?.data || error.message);
+    }
+
+    return removed;
   }
 }

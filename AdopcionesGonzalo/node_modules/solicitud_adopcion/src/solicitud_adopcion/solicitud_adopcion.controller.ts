@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, NotFoundException, ParseUUIDPipe, ParseIntPipe } from '@nestjs/common';
 import { SolicitudAdopcionService } from './solicitud_adopcion.service';
 import { CreateSolicitudAdopcionDto } from './dto/create-solicitud_adopcion.dto';
 import { UpdateSolicitudAdopcionDto } from './dto/update-solicitud_adopcion.dto';
+import { SolicitudAdopcion } from './entities/solicitud_adopcion.entity'; // Importa la entidad para tipado de retorno
 
-@Controller('solicitud-adopcion')
+@Controller('solicitudes-adopcion') // Es buena práctica usar el plural
 export class SolicitudAdopcionController {
   constructor(private readonly solicitudAdopcionService: SolicitudAdopcionService) {}
 
   @Post()
-  create(@Body() createSolicitudAdopcionDto: CreateSolicitudAdopcionDto) {
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createSolicitudAdopcionDto: CreateSolicitudAdopcionDto): Promise<SolicitudAdopcion> {
     return this.solicitudAdopcionService.create(createSolicitudAdopcionDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<SolicitudAdopcion[]> {
     return this.solicitudAdopcionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.solicitudAdopcionService.findOne(+id);
+  async findOne(@Param('id', ParseUUIDPipe) id: number): Promise<SolicitudAdopcion> { // ¡CAMBIADO AQUÍ!
+    return this.solicitudAdopcionService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSolicitudAdopcionDto: UpdateSolicitudAdopcionDto) {
-    return this.solicitudAdopcionService.update(+id, updateSolicitudAdopcionDto);
+  async update(
+    @Param('id', ParseUUIDPipe) id: number, // ¡CAMBIADO AQUÍ!
+    @Body() updateSolicitudAdopcionDto: UpdateSolicitudAdopcionDto,
+  ): Promise<SolicitudAdopcion> {
+    return this.solicitudAdopcionService.update(id, updateSolicitudAdopcionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.solicitudAdopcionService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', ParseUUIDPipe) id: number): Promise<void> { // ¡CAMBIADO AQUÍ!
+    await this.solicitudAdopcionService.remove(id);
   }
 }
