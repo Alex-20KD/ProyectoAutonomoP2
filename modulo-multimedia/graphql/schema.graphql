@@ -1,0 +1,143 @@
+# -------------------- TYPES --------------------
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type ResourceType {
+  id: ID!
+  name: String!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type Resource {
+  id: ID!
+  post_id: ID!
+  url: String!
+  resource_type_id: ID!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type Tag {
+  id: ID!
+  name: String!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+type Comment {
+  id: ID!
+  post_id: ID!
+  content: String!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+# -------------------- INPUTS --------------------
+
+input CreatePostInput {
+  title: String!
+  content: String!
+}
+
+input UpdatePostInput {
+  id: ID!
+  title: String
+  content: String
+}
+
+input CreateResourceInput {
+  post_id: ID!
+  url: String!
+  resource_type_id: ID!
+}
+
+input UpdateResourceInput {
+  id: ID!
+  post_id: ID
+  url: String
+  resource_type_id: ID
+}
+
+input CreateResourceTypeInput {
+  name: String!
+}
+
+input UpdateResourceTypeInput {
+  id: ID!
+  name: String
+}
+
+input CreateTagInput {
+  name: String!
+}
+
+input UpdateTagInput {
+  id: ID!
+  name: String
+}
+
+input CreateCommentInput {
+  post_id: ID!
+  content: String!
+}
+
+input UpdateCommentInput {
+  id: ID!
+  post_id: ID
+  content: String
+}
+
+# -------------------- CONSULTAS --------------------
+
+type Query {
+  posts: [Post!]! @all
+  post(id: ID!): Post @find
+
+  resources: [Resource!]! @all
+  resource(id: ID!): Resource @find
+
+  resourceTypes: [ResourceType!]! @all
+  resourceType(id: ID!): ResourceType @find
+
+  tags: [Tag!]! @all
+  tag(id: ID!): Tag @find
+
+  comments: [Comment!]! @all
+  comment(id: ID!): Comment @find
+}
+
+# -------------------- MUTACIONES --------------------
+
+type Mutation {
+  # Posts
+  createPost(input: CreatePostInput!): Post @create
+  updatePost(input: UpdatePostInput!): Post @update
+  deletePost(id: ID!): Post @delete
+
+  # Resources
+  createResource(input: CreateResourceInput!): Resource @create
+  updateResource(input: UpdateResourceInput!): Resource @update
+  deleteResource(id: ID!): Resource @delete
+
+  # ResourceTypes
+  createResourceType(input: CreateResourceTypeInput!): ResourceType @create
+  updateResourceType(input: UpdateResourceTypeInput!): ResourceType @update
+  deleteResourceType(id: ID!): ResourceType @delete
+
+  # Tags
+  createTag(input: CreateTagInput!): Tag @create
+  updateTag(input: UpdateTagInput!): Tag @update
+  deleteTag(id: ID!): Tag @delete
+
+  # Comments
+  createComment(input: CreateCommentInput!): Comment @create
+  updateComment(input: UpdateCommentInput!): Comment @update
+  deleteComment(id: ID!): Comment @delete
+}

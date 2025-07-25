@@ -60,5 +60,112 @@ Los datos se guardan correctamente en la base de datos, y las relaciones entre t
 🧩 Rol dentro del sistema distribuido
 Este módulo representa uno de los microservicios del sistema. Será consumido por el API Gateway GraphQL, y en próximas fases se conectará con el servicio de WebSockets para emitir notificaciones en tiempo real (por ejemplo, cuando se cree un nuevo post o comentario).
 
+
+
+---
+
+📡 Integración GraphQL - Módulo Multimedia
+
+Este módulo expone sus entidades a través de una API GraphQL utilizando el paquete Lighthouse. Todas las operaciones CRUD se encuentran habilitadas y probadas mediante el Playground de GraphQL.
+
+
+---
+
+🚀 Acceso al Playground
+
+Para probar las consultas y mutaciones de GraphQL:
+
+1. Asegúrate de que el servidor esté en ejecución:
+
+php artisan serve
+(asegurate de tener conectada tu base de datos, en mi caso es phpMyAdmin por lo cual debo hacerlo de manera manual desde xampp)
+
+2. Abre el navegador y accede a:
+
+http://localhost:8000/graphql-playground
+
+
+📋 Entidades disponibles
+
+El esquema expone las siguientes entidades:
+
+Post
+
+Resource
+
+ResourceType
+
+Tag
+
+Comment
+
+🔍 Consultas (Query)
+
+Puedes obtener todos los registros o uno por ID. Ejemplo:
+
+query {
+  posts {
+    id
+    title
+    content
+  }
+
+  post(id: 1) {
+    id
+    title
+    content
+  }
+}
+
+
+---
+
+✏️ Mutaciones (Mutation)
+
+📌 Crear
+
+mutation {
+  createPost(input: {
+    title: "Mi primer post"
+    content: "Contenido interesante"
+  }) {
+    id
+    title
+  }
+}
+
+📝 Actualizar
+
+mutation {
+  updatePost(id: 1, input: {
+    title: "Post actualizado"
+    content: "Nuevo contenido"
+  }) {
+    id
+    title
+  }
+}
+
+🗑️ Eliminar
+
+mutation {
+  deletePost(id: 1) {
+    id
+  }
+}
+
+> Puedes hacer lo mismo para Resource, ResourceType, Tag y Comment, cambiando el nombre del tipo y los campos correspondientes.
+
+
+
+
+---
+
+🧪 Recomendaciones
+
+Usa el Playground para experimentar con los tipos y verificar las respuestas en tiempo real.
+
+Revisa el archivo graphql/schema.graphql para ver la estructura completa del esquema.
+
 Modulo creado por :Carlos Alberto Delgado Campuzano , 5to "A"
 Aplicaciones para el Servidor Web 
