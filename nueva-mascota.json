@@ -1,0 +1,10 @@
+{
+  "name": "Buddy",
+  "especie": "Perro",
+  "raza": "Labrador",
+  "edad": 2,
+  "genero": "Macho",
+  "descripcion": "Perro muy energético y cariñoso, perfecto para correr",
+  "foto_url": "https://example.com/buddy.jpg",
+  "estado_adopcion": true
+}

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AdopcionAnimal.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+09161b39efbae9a9e00b0d3ec5b61511aa69741d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+088c133962cd12d3f308ed6446756fe1173db388")]
 [assembly: System.Reflection.AssemblyProductAttribute("AdopcionAnimal.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AdopcionAnimal.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

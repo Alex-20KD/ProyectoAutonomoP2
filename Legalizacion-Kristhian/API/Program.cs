@@ -18,7 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // -------------------- PASO 2: AÑADE TU DBCONTEXT AQUÍ --------------------------------
 builder.Services.AddDbContext<AdopcionAnimalDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ---- LÍNEAS PARA LA INYECCIÓN DE DEPENDENCIAS ----
 // Repositorios
