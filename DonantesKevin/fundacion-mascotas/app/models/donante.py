@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, Text
 from sqlalchemy.orm import relationship
-from app.config.database import Base
+from app.config.database_sqlite import Base
 from datetime import date
 
 class Donante(Base):

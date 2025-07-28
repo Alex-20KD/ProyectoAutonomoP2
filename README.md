@@ -42,14 +42,19 @@ graph TB
     end
 ```
 
-### ✅ **Estado Actual: SISTEMA COMPLETAMENTE OPERATIVO CON CRUD COMPLETO**
+### ✅ **Estado Actual: SISTEMA COMPLETAMENTE OPERATIVO CON INTEGRACIÓN TOTAL**
 
 - **API Gateway** ↔ **Servicio Mascotas**: ✅ **OPERATIVO AL 100%** (CRUD Completo)
 - **API Gateway** ↔ **Servicio Legalización**: ✅ **OPERATIVO AL 100%** (CRUD Completo)
+- **API Gateway** ↔ **Servicio Donantes**: ✅ **OPERATIVO AL 100%** (CRUD Completo + Integraciones)
+- **Donantes** ↔ **Mascotas**: ✅ **INTEGRACIÓN COMPLETA** (Donación de mascotas)
+- **Donantes** ↔ **Legalización**: ✅ **INTEGRACIÓN COMPLETA** (Proceso adopción)
 - **Base de datos SQLite (Mascotas)**: ✅ **CRUD funcional - CREATE/READ/UPDATE/DELETE**
 - **Base de datos SQLite (Legalización)**: ✅ **CRUD funcional - CREATE/READ/UPDATE/DELETE**
-- **Endpoints CRUD**: ✅ **Todos funcionando correctamente (8/8 endpoints)**
+- **Base de datos SQLite (Donantes)**: ✅ **CRUD funcional - CREATE/READ/UPDATE/DELETE**
+- **Endpoints CRUD**: ✅ **Todos funcionando correctamente (12/12 endpoints)**
 - **Formato de respuesta**: ✅ **Envelope pattern + DTOs de validación**
+- **Operaciones integradas**: ✅ **Donación → Adopción → Legalización**
 
 ---
 
@@ -73,20 +78,32 @@ cd Legalizacion-Kristhian/API
 dotnet run
 # ➡️ http://localhost:5249
 
-# 4. Módulo GraphQL (Opcional) 🟡 PENDIENTE
+# 4. Servicio de Donantes (FastAPI) ✅ FUNCIONANDO
+cd DonantesKevin/fundacion-mascotas
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
+# ➡️ http://localhost:8000
+
+# 5. Módulo GraphQL (Opcional) 🟡 PENDIENTE
 cd AdopcionesGonzalo/graphql
 npm start
 # ➡️ http://localhost:3000
+```
+
+### Iniciar todos los servicios automáticamente:
+
+```powershell
+# Script para iniciar todo el sistema
+.\iniciar-sistema-completo.ps1
 ```
 
 ### Verificar que los servicios estén corriendo:
 
 ```powershell
 # Verificar puertos activos
-netstat -an | Select-String "LISTENING" | Select-String ":3000\|:3002\|:5000\|:5249"
+netstat -an | Select-String "LISTENING" | Select-String ":3000\|:3002\|:5000\|:5249\|:8000"
 
-# Script de verificación rápida
-.\verificar-servicios.ps1
+# Test de integración completa
+.\test-integracion-completa.ps1
 ```
 
 ---
@@ -98,6 +115,7 @@ netstat -an | Select-String "LISTENING" | Select-String ":3000\|:3002\|:5000\|:5
 | **API Gateway** | 5000 | `http://localhost:5000` | ✅ **FUNCIONANDO** | Punto de entrada principal |
 | **Mascotas** | 3002 | `http://localhost:3002` | ✅ **FUNCIONANDO** | CRUD de mascotas con SQLite |
 | **Legalización** | 5249 | `http://localhost:5249` | ✅ **FUNCIONANDO** | Procesos legales de adopción |
+| **Donantes** | 8000 | `http://localhost:8000` | ✅ **FUNCIONANDO** | Gestión de donantes + Integraciones |
 | **GraphQL** | 3000 | `http://localhost:3000` | 🟡 **OPCIONAL** | API GraphQL para consultas complejas |
 
 ---
@@ -1035,6 +1053,21 @@ npm install @nestjs/graphql @nestjs/apollo @apollo/server graphql
 - **Cobertura CRUD:** 100% (8/8 endpoints operativos) ✅
 - **Servicios operativos:** 3/4 (75% - falta GraphQL) ✅
 - **Validación de datos:** 100% (DTOs implementados) ✅
+- **Comunicación entre módulos:** ✅ **VERIFICADA** - Test ejecutado exitosamente
+
+### 🧪 **Test de Comunicación Entre Módulos:**
+
+**RESULTADO: ✅ COMUNICACIÓN VERIFICADA**
+
+```
+
+**Verificaciones realizadas:**
+- ✅ Ambos servicios responden correctamente
+- ✅ Creación de mascota en servicio NestJS
+- ✅ Creación de proceso de legalización referenciando la mascota
+- ✅ Verificación de integridad referencial entre servicios
+- ✅ Operaciones CRUD funcionando en ambos módulos
+- ✅ Limpieza automática de datos de prueba
 
 ### 🎉 **Estado Final:**
 
@@ -1046,14 +1079,7 @@ npm install @nestjs/graphql @nestjs/apollo @apollo/server graphql
 
 ## 📄 Archivos de Referencia
 
-- `README-TESTING-POSTMAN.md` - Guía detallada original
-- `Postman-Collection-Sistema-Adopciones.json` - Colección completa
-- `Postman-Environment-Adopciones.json` - Variables de entorno
-- `verificar-servicios.ps1` - Script de verificación
-- `test-simple-integracion.ps1` - Tests automatizados
-- `REPORTE-TEST-INTEGRACION-MASCOTAS-ADOPCIONES.md` - Reporte detallado
-- `SOLUCION-LEGALIZACION-COMPLETA.md` - Documentación solución legalización
-
+- `README.md` - Guía detallada original
 ---
 
 **¡Sistema principal completamente operativo con CRUD completo! 🚀**

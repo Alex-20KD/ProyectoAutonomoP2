@@ -1,5 +1,5 @@
-from .config.settings import settings
-from .config.database import get_db, get_async_db
+from .config.settings_sqlite import settings
+from .config.database_sqlite import get_db, get_async_db
 
 __all__ = [
     "settings",

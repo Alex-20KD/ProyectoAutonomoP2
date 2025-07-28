@@ -3,7 +3,7 @@ import json
 import asyncio
 import logging
 from .connection_manager import connection_manager
-from app.config.settings import settings
+from app.config.settings_sqlite import settings
 
 logger = logging.getLogger(__name__)
 

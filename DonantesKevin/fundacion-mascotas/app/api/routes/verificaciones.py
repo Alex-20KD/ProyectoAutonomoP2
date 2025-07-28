@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from datetime import date
 
-from app.config.database import get_db
+from app.config.database_sqlite import get_db
 from app.services.verificacion_service import VerificacionService
 
 router = APIRouter(prefix="/verificaciones", tags=["verificaciones"])

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel
 
-from app.config.database import get_db
+from app.config.database_sqlite import get_db
 from app.services.contacto_service import ContactoService
 
 router = APIRouter(prefix="/contactos", tags=["contactos"])

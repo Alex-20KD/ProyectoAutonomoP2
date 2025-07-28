@@ -1,5 +1,6 @@
 using ApiGateway.Services.Adopciones;
 using ApiGateway.Services.Legalizacion;
+using ApiGateway.Services.Donantes;
 using ApiGateway.Services.Integration;
 using Microsoft.OpenApi.Models;
 
@@ -11,10 +12,12 @@ builder.Services.AddControllers();
 // Configurar HttpClient para los servicios
 builder.Services.AddHttpClient<ILegalizacionService, LegalizacionService>();
 builder.Services.AddHttpClient<IAdopcionesService, AdopcionesService>();
+builder.Services.AddHttpClient<IDonantesService, DonantesService>();
 
 // Registrar servicios
 builder.Services.AddScoped<ILegalizacionService, LegalizacionService>();
 builder.Services.AddScoped<IAdopcionesService, AdopcionesService>();
+builder.Services.AddScoped<IDonantesService, DonantesService>();
 builder.Services.AddScoped<IIntegrationService, IntegrationService>();
 
 // Configurar CORS
@@ -99,7 +102,8 @@ app.MapGet("/services", (IConfiguration config) =>
         Services = new
         {
             LegalizacionApi = config["Services:LegalizacionApi:BaseUrl"] ?? "https://localhost:7001",
-            AdopcionesApi = config["Services:AdopcionesApi:BaseUrl"] ?? "http://localhost:3000"
+            AdopcionesApi = config["Services:AdopcionesApi:BaseUrl"] ?? "http://localhost:3000",
+            DonantesApi = config["Services:DonantesApi:BaseUrl"] ?? "http://localhost:8000"
         },
         Status = "Running",
         Timestamp = DateTime.UtcNow

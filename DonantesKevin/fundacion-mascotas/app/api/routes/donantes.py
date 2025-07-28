@@ -4,7 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import date
 
-from app.config.database import get_db
+from app.config.database_sqlite import get_db
 from app.services.donante_service import DonanteService
 from app.models.donante import Donante
 

@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from app.config.settings import settings
-from app.config.database import engine, Base
-from app.api.routes import donantes, mascotas, verificaciones, contactos, historial
+from app.config.settings_sqlite import settings
+from app.config.database_sqlite import engine, Base
+from app.api.routes import donantes, mascotas, verificaciones, contactos, historial, integracion
 from app.websockets.events import start_websocket_server
 from app.websockets.notification_service import notification_service
 from app.api.middleware import setup_middlewares
@@ -14,6 +14,15 @@ from app.api.middleware import setup_middlewares
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Importar modelos para que SQLAlchemy los reconozca
+from app.models import (
+    Donante,
+    MascotaDonada,
+    VerificacionDonante,
+    InformacionContacto,
+    HistorialColaboracion
+)
 
 # Crear tablas
 Base.metadata.create_all(bind=engine)
@@ -43,6 +52,7 @@ app.include_router(mascotas.router, prefix="/api/v1")
 app.include_router(verificaciones.router, prefix="/api/v1")
 app.include_router(contactos.router, prefix="/api/v1")
 app.include_router(historial.router, prefix="/api/v1")
+app.include_router(integracion.router, prefix="/api/v1")
 
 @app.get("/")
 async def root():
