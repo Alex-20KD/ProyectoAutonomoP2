@@ -45,6 +45,13 @@ export class MascotaService {
     return this.mascotaRepository.find(); // Esto es lo que debe hacer para devolver todos los registros
   }
 
+  // Método específico para obtener mascotas disponibles para adopción
+  findDisponibles(): Promise<Mascota[]> {
+    return this.mascotaRepository.find({ 
+      where: { estado_adopcion: true } 
+    });
+  }
+
   async findOne(id: number): Promise<Mascota> {
     const mascota = await this.mascotaRepository.findOne({ where: { id } });
     if (!mascota) {

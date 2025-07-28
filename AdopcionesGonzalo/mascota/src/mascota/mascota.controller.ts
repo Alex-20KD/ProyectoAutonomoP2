@@ -20,6 +20,12 @@ export class MascotaController {
     return this.mascotaService.findAll();
   }
 
+  @Get('disponibles')
+  findDisponibles(): Promise<Mascota[]> {
+    // Endpoint específico para mascotas disponibles para adopción
+    return this.mascotaService.findDisponibles();
+  }
+
   @Get(':id') // La ruta ahora es /mascotas/:id
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<Mascota> {
     return this.mascotaService.findOne(id);
