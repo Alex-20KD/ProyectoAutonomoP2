@@ -2,6 +2,7 @@
 using Application.Interfaces.Services;
 using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
+using API.DTOs;
 
 namespace API.Controllers
 {
@@ -35,21 +36,48 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Adopcion nuevaAdopcion)
+        public async Task<IActionResult> Create([FromBody] CreateAdopcionDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var nuevaAdopcion = new Adopcion
+            {
+                FechaAdopcion = dto.FechaAdopcion,
+                Estado = dto.Estado,
+                MascotaId = dto.MascotaId,
+                AdoptanteId = dto.AdoptanteId
+            };
+
             var adopcionCreada = await _adopcionService.CrearAdopcionAsync(nuevaAdopcion);
             // CAMBIO AQUÍ: Se usa Id para generar la URL de respuesta.
             return CreatedAtAction(nameof(GetById), new { id = adopcionCreada.Id }, adopcionCreada);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Adopcion adopcionActualizada)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateAdopcionDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             // CAMBIO AQUÍ: Se compara el id de la ruta con Id.
-            if (id != adopcionActualizada.Id)
+            if (id != dto.Id)
             {
                 return BadRequest("El ID de la ruta no coincide con el ID del objeto.");
             }
+
+            var adopcionActualizada = new Adopcion
+            {
+                Id = dto.Id,
+                FechaAdopcion = dto.FechaAdopcion,
+                Estado = dto.Estado,
+                MascotaId = dto.MascotaId,
+                AdoptanteId = dto.AdoptanteId
+            };
             
             var result = await _adopcionService.ActualizarAdopcionAsync(adopcionActualizada);
             if (!result)
