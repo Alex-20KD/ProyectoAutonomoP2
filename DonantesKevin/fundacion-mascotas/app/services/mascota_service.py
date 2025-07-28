@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from app.models.mascota_donada import MascotaDonada
+from app.models.donante import Donante
 from app.websockets.notification_service import NotificationService
+from app.websockets.central_connector import central_connector
 from typing import List, Optional
 
 class MascotaService:
@@ -15,7 +17,10 @@ class MascotaService:
         self.db.commit()
         self.db.refresh(donacion)
         
-        # Notificación en tiempo real
+        # Obtener datos del donante
+        donante = self.db.query(Donante).filter(Donante.id == donacion.donante_id).first()
+        
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "donacion_registrada",
             "data": {
@@ -24,6 +29,23 @@ class MascotaService:
                 "mascota_id": donacion.mascota_id,
                 "fecha": str(donacion.fecha_donacion),
                 "estado": donacion.estado_revision
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "mascota_donada",
+            "category": "donacion",
+            "priority": "high",  # Las donaciones son importantes para otros módulos
+            "data": {
+                "id": donacion.id,
+                "donante_id": donacion.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "donante_correo": donante.correo if donante else None,
+                "mascota_id": donacion.mascota_id,
+                "motivo_donacion": donacion.motivo_donacion,
+                "estado_revision": donacion.estado_revision,
+                "fecha_donacion": str(donacion.fecha_donacion)
             }
         })
         
@@ -57,7 +79,10 @@ class MascotaService:
         self.db.commit()
         self.db.refresh(donacion)
         
-        # Notificación de cambio de estado
+        # Obtener datos del donante
+        donante = self.db.query(Donante).filter(Donante.id == donacion.donante_id).first()
+        
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "donacion_revisada",
             "data": {
@@ -66,6 +91,23 @@ class MascotaService:
                 "estado_anterior": estado_anterior,
                 "estado_nuevo": nuevo_estado,
                 "observaciones": observaciones
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "donacion_revisada",
+            "category": "donacion",
+            "priority": "high",
+            "data": {
+                "id": donacion.id,
+                "donante_id": donacion.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "mascota_id": donacion.mascota_id,
+                "estado_anterior": estado_anterior,
+                "estado_nuevo": nuevo_estado,
+                "observaciones": observaciones,
+                "fecha_revision": str(donacion.fecha_donacion)
             }
         })
         

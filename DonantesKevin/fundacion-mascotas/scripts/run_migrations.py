@@ -46,24 +46,20 @@ async def run_sql_file(file_path: Path):
             password=settings.DB_PASSWORD,
             database=settings.DB_NAME
         )
-        
+
         with open(file_path, 'r', encoding='utf-8') as file:
             sql_content = file.read()
-        
-        # Dividir por comandos (separados por ;)
-        commands = [cmd.strip() for cmd in sql_content.split(';') if cmd.strip()]
-        
-        for command in commands:
-            if command and not command.startswith('--'):
-                await conn.execute(command)
-        
+
+        # Ejecutar todo el contenido de una sola vez
+        await conn.execute(sql_content)
+
         await conn.close()
         print(f"✅ Ejecutado: {file_path.name}")
-        
+
     except Exception as e:
         print(f"❌ Error ejecutando {file_path.name}: {e}")
         return False
-    
+
     return True
 
 async def main():

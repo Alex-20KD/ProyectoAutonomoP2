@@ -2,8 +2,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from app.models.donante import Donante
 from app.websockets.notification_service import NotificationService
+from app.websockets.central_connector import central_connector
 from typing import List, Optional
 from datetime import date
+import logging
+
+logger = logging.getLogger(__name__)
 
 class DonanteService:
     def __init__(self, db: Session):
@@ -17,13 +21,29 @@ class DonanteService:
         self.db.commit()
         self.db.refresh(donante)
         
-        # Notificación en tiempo real
+        # Notificación local (tu módulo)
         await self.notification_service.notify_event({
             "type": "donante_creado",
             "data": {
                 "id": donante.id,
                 "nombre": donante.nombre,
                 "fecha": str(donante.fecha_registro)
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "donante_creado",
+            "category": "donante",
+            "data": {
+                "id": donante.id,
+                "nombre": donante.nombre,
+                "correo": donante.correo,
+                "telefono": donante.telefono,
+                "tipo_documento": donante.tipo_documento,
+                "numero_documento": donante.numero_documento,
+                "estado": donante.estado,
+                "fecha_registro": str(donante.fecha_registro)
             }
         })
         
@@ -48,6 +68,13 @@ class DonanteService:
         if not donante:
             return None
         
+        datos_anteriores = {
+            "nombre": donante.nombre,
+            "correo": donante.correo,
+            "telefono": donante.telefono,
+            "direccion": donante.direccion
+        }
+        
         for key, value in datos_actualizacion.items():
             if hasattr(donante, key):
                 setattr(donante, key, value)
@@ -55,12 +82,25 @@ class DonanteService:
         self.db.commit()
         self.db.refresh(donante)
         
-        # Notificación de actualización
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "donante_actualizado",
             "data": {
                 "id": donante.id,
                 "nombre": donante.nombre,
+                "cambios": list(datos_actualizacion.keys())
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "donante_actualizado",
+            "category": "donante",
+            "data": {
+                "id": donante.id,
+                "nombre": donante.nombre,
+                "datos_anteriores": datos_anteriores,
+                "datos_nuevos": datos_actualizacion,
                 "cambios": list(datos_actualizacion.keys())
             }
         })
@@ -78,7 +118,7 @@ class DonanteService:
         self.db.commit()
         self.db.refresh(donante)
         
-        # Notificación de cambio de estado
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "estado_donante_cambiado",
             "data": {
@@ -86,6 +126,21 @@ class DonanteService:
                 "nombre": donante.nombre,
                 "estado_anterior": estado_anterior,
                 "estado_nuevo": nuevo_estado
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "donante_estado_cambiado",
+            "category": "donante",
+            "priority": "high",  # Estado es importante para otros módulos
+            "data": {
+                "id": donante.id,
+                "nombre": donante.nombre,
+                "correo": donante.correo,
+                "estado_anterior": estado_anterior,
+                "estado_nuevo": nuevo_estado,
+                "motivo": "Cambio manual de estado"
             }
         })
         
