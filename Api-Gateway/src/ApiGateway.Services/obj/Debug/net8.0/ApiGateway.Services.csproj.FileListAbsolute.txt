@@ -1,0 +1,16 @@
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\bin\Debug\net8.0\ApiGateway.Services.deps.json
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\bin\Debug\net8.0\ApiGateway.Services.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\bin\Debug\net8.0\ApiGateway.Services.pdb
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\bin\Debug\net8.0\ApiGateway.Models.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\bin\Debug\net8.0\ApiGateway.Models.pdb
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.csproj.AssemblyReference.cache
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.AssemblyInfoInputs.cache
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.AssemblyInfo.cs
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.csproj.CoreCompileInputs.cache
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.sourcelink.json
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGatew.937E9A44.Up2Date
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\refint\ApiGateway.Services.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ApiGateway.Services.pdb
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Services\obj\Debug\net8.0\ref\ApiGateway.Services.dll

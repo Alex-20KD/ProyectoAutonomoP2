@@ -1,0 +1,12 @@
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\bin\Debug\net8.0\ApiGateway.Models.deps.json
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\bin\Debug\net8.0\ApiGateway.Models.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\bin\Debug\net8.0\ApiGateway.Models.pdb
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.AssemblyInfoInputs.cache
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.AssemblyInfo.cs
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.csproj.CoreCompileInputs.cache
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.sourcelink.json
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\refint\ApiGateway.Models.dll
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ApiGateway.Models.pdb
+C:\Users\Kazuto\OneDrive\Documentos\ProyectoAutonomoP2\Api-Gateway\src\ApiGateway.Models\obj\Debug\net8.0\ref\ApiGateway.Models.dll

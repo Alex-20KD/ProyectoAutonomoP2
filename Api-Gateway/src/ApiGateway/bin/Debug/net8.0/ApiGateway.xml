@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ApiGateway</name>
+    </assembly>
+    <members>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.ObtenerMascotasDisponibles">
+            <summary>
+            Obtener todas las mascotas disponibles para adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.ObtenerMascota(System.Int32)">
+            <summary>
+            Obtener información detallada de una mascota con su documentación
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.CrearSolicitudAdopcion(ApiGateway.Models.Adopciones.CreateSolicitudAdopcionDto)">
+            <summary>
+            Crear una nueva solicitud de adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.ObtenerAdopcionCompleta(System.Int32)">
+            <summary>
+            Obtener información completa de una adopción (solicitud + legalización)
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.ObtenerAdopcionesPorAdoptante(System.Int32)">
+            <summary>
+            Obtener todas las adopciones de un adoptante específico
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.IniciarLegalizacion(System.Int32)">
+            <summary>
+            Iniciar el proceso de legalización para una solicitud aprobada
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.AdopcionesController.CompletarLegalizacion(System.Int32,ApiGateway.Models.Legalizacion.CreateContratoAdopcionDto)">
+            <summary>
+            Completar el proceso de legalización con la firma del contrato
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerAdopcion(System.Int32)">
+            <summary>
+            Obtener información de una adopción en el sistema de legalización
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerEstadoLegalizacion(System.Int32)">
+            <summary>
+            Obtener estado de legalización de una adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerAdopcionesPorMascota(System.Int32)">
+            <summary>
+            Obtener adopciones por mascota
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerAdopcionesPorAdoptante(System.Int32)">
+            <summary>
+            Obtener adopciones por adoptante
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerContrato(System.Int32)">
+            <summary>
+            Obtener contrato de adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.CrearContrato(ApiGateway.Models.Legalizacion.CreateContratoAdopcionDto)">
+            <summary>
+            Crear un nuevo contrato de adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.GenerarCertificado(System.Int32)">
+            <summary>
+            Generar certificado de propiedad para una adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerSeguimientos(System.Int32)">
+            <summary>
+            Obtener seguimientos de una adopción
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.SubirDocumentacion(System.Int32,ApiGateway.Models.Legalizacion.DocumentacionMascotaDto)">
+            <summary>
+            Subir documentación de una mascota
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerDocumentacion(System.Int32)">
+            <summary>
+            Obtener documentación de una mascota
+            </summary>
+        </member>
+    </members>
+</doc>
