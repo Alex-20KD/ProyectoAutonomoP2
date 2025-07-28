@@ -39,6 +39,90 @@
             Completar el proceso de legalización con la firma del contrato
             </summary>
         </member>
+        <member name="T:ApiGateway.Controllers.DonantesController">
+            <summary>
+            Controlador para operaciones del módulo de donantes y sus integraciones
+            </summary>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ObtenerDonantes">
+            <summary>
+            Obtener todos los donantes
+            </summary>
+            <returns>Lista de donantes</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ObtenerDonantePorId(System.Int32)">
+            <summary>
+            Obtener un donante por ID
+            </summary>
+            <param name="id">ID del donante</param>
+            <returns>Información del donante</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.CrearDonante(System.Object)">
+            <summary>
+            Crear un nuevo donante
+            </summary>
+            <param name="donanteData">Datos del donante</param>
+            <returns>Donante creado</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ActualizarDonante(System.Int32,System.Object)">
+            <summary>
+            Actualizar un donante
+            </summary>
+            <param name="id">ID del donante</param>
+            <param name="donanteData">Datos actualizados del donante</param>
+            <returns>Donante actualizado</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.EliminarDonante(System.Int32)">
+            <summary>
+            Eliminar un donante
+            </summary>
+            <param name="id">ID del donante</param>
+            <returns>Confirmación de eliminación</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ObtenerMascotasDisponibles">
+            <summary>
+            Obtener mascotas disponibles a través del servicio de donantes
+            </summary>
+            <returns>Lista de mascotas disponibles</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ObtenerProcesosLegalizacion">
+            <summary>
+            Obtener procesos de legalización a través del servicio de donantes
+            </summary>
+            <returns>Lista de procesos de legalización</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ProcesarDonacionMascota(System.Object)">
+            <summary>
+            Procesar donación de una mascota
+            </summary>
+            <param name="donacionData">Datos de la donación</param>
+            <returns>Resultado del procesamiento</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.IniciarAdopcionCompleta(System.Object)">
+            <summary>
+            Iniciar proceso completo de adopción
+            </summary>
+            <param name="adopcionData">Datos de la adopción</param>
+            <returns>Resultado del proceso de adopción</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.VerificarServiciosConectados">
+            <summary>
+            Verificar conectividad con todos los servicios
+            </summary>
+            <returns>Estado de conectividad de servicios</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.ObtenerEstadisticasIntegracion">
+            <summary>
+            Obtener estadísticas de integración
+            </summary>
+            <returns>Estadísticas de integración con otros servicios</returns>
+        </member>
+        <member name="M:ApiGateway.Controllers.DonantesController.TestConexionServicios">
+            <summary>
+            Test de conexión con todos los servicios
+            </summary>
+            <returns>Resultado de tests de conexión</returns>
+        </member>
         <member name="M:ApiGateway.Controllers.LegalizacionController.ObtenerAdopcion(System.Int32)">
             <summary>
             Obtener información de una adopción en el sistema de legalización

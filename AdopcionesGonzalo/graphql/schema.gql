@@ -235,5 +235,5 @@ input UpdateHistorialAdoptanteInput {
   fecha_ultima_adopcion: DateTime
   calificacion: Int
   notas: String
-  id: Int!
+  id: Float!
 }
