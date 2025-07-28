@@ -70,7 +70,7 @@ namespace ApiGateway.Services.Adopciones
         {
             try
             {
-                var response = await _httpClient.GetAsync($"{_adopcionesApiUrl}/mascota/{mascotaId}");
+                var response = await _httpClient.GetAsync($"{_adopcionesApiUrl}/mascotas/{mascotaId}");
 
                 if (response.IsSuccessStatusCode)
                 {
