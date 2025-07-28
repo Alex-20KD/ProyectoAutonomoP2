@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # Base de datos compartida
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: fundacion_mascotas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fundacion_network
+
+  # WebSocket Central (Servicio compartido)
+  websocket-central:
+    build: ./websocket
+    ports:
+      - "8001:8001"  # Para clientes (frontend)
+      - "8002:8002"  # Para módulos
+    depends_on:
+      - postgres
+    networks:
+      - fundacion_network
+    environment:
+      - NODE_ENV=production
+
+  # Módulo Donantes (Kevin)
+  donantes-service:
+    build: ./DonantesKevin/fundacion-mascotas
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - websocket-central
+    environment:
+      - DB_HOST=postgres
+      - WEBSOCKET_CENTRAL_URL=ws://websocket-central:8002
+    networks:
+      - fundacion_network
+
+  # Módulo Adopciones (Gonzalo) 
+  adopciones-service: 
+    build: ./AdopcionesGonzalo  
+    ports:
+      - "8010:8000"
+    depends_on:
+      - postgres
+      - websocket-central
+    environment:
+      - DB_HOST=postgres
+      - WEBSOCKET_CENTRAL_URL=ws://websocket-central:8002
+    networks:
+      - fundacion_network
+
+  # Módulo Multimedia (Carlos) 
+  multimedia-service: 
+    build: ./modulo-multimedia 
+    ports:
+      - "8020:8000"
+    depends_on:
+      - postgres
+      - websocket-central
+    environment:
+      - DB_HOST=postgres
+      - WEBSOCKET_CENTRAL_URL=ws://websocket-central:8002
+    networks:
+      - fundacion_network
+
+  # Módulo Mascota (Ginger) 
+  mascota-service: 
+    build: ./mascotasGinger 
+    ports:
+      - "8030:8000"
+    depends_on:
+      - postgres
+      - websocket-central
+    environment:
+      - DB_HOST=postgres
+      - WEBSOCKET_CENTRAL_URL=ws://websocket-central:8002
+    networks:
+      - fundacion_network
+  
+  # Módulo Legalizacion (Kristhian)
+  legalizacion-service:
+    build: ./Legalizacion-Kristhian
+    ports:
+      - "8040:8000"
+    depends_on:
+      - postgres
+      - websocket-central
+    environment:
+      - DB_HOST=postgres
+      - WEBSOCKET_CENTRAL_URL=ws://websocket-central:8002
+    networks:
+      - fundacion_network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  fundacion_network:
+    driver: bridge

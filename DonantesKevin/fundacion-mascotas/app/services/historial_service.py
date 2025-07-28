@@ -1,8 +1,9 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, func
+from sqlalchemy import and_, func, extract
 from app.models.historial_colaboracion import HistorialColaboracion
 from app.models.donante import Donante
 from app.websockets.notification_service import NotificationService
+from app.websockets.central_connector import central_connector
 from typing import List, Optional, Dict, Any
 from datetime import date, datetime, timedelta
 
@@ -23,7 +24,7 @@ class HistorialService:
         self.db.commit()
         self.db.refresh(colaboracion)
         
-        # Notificación en tiempo real
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "colaboracion_registrada",
             "category": "historial",
@@ -34,6 +35,22 @@ class HistorialService:
                 "tipo_colaboracion": colaboracion.tipo_colaboracion,
                 "descripcion": colaboracion.descripcion,
                 "fecha": str(colaboracion.fecha_colaboracion)
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "nueva_colaboracion",
+            "category": "historial",
+            "priority": "medium",
+            "data": {
+                "id": colaboracion.id,
+                "donante_id": colaboracion.donante_id,
+                "donante_nombre": donante.nombre,
+                "donante_correo": donante.correo,
+                "tipo_colaboracion": colaboracion.tipo_colaboracion,
+                "descripcion": colaboracion.descripcion,
+                "fecha_colaboracion": str(colaboracion.fecha_colaboracion)
             }
         })
         
@@ -74,7 +91,7 @@ class HistorialService:
         self.db.commit()
         self.db.refresh(colaboracion)
         
-        # Notificación de actualización
+        # Notificación local
         donante = self.db.query(Donante).filter(Donante.id == colaboracion.donante_id).first()
         await self.notification_service.notify_event({
             "type": "colaboracion_actualizada",
@@ -88,7 +105,56 @@ class HistorialService:
             }
         })
         
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "colaboracion_actualizada",
+            "category": "historial",
+            "data": {
+                "id": colaboracion.id,
+                "donante_id": colaboracion.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "tipo_colaboracion": colaboracion.tipo_colaboracion,
+                "cambios": list(datos_actualizacion.keys())
+            }
+        })
+        
         return colaboracion
+    
+    async def eliminar_colaboracion(self, colaboracion_id: int) -> bool:
+        """Eliminar una colaboración del historial"""
+        colaboracion = self.obtener_colaboracion(colaboracion_id)
+        if not colaboracion:
+            return False
+        
+        # Obtener datos para notificación antes de eliminar
+        donante = self.db.query(Donante).filter(Donante.id == colaboracion.donante_id).first()
+        colaboracion_data = {
+            "id": colaboracion.id,
+            "donante_id": colaboracion.donante_id,
+            "donante_nombre": donante.nombre if donante else "Desconocido",
+            "tipo_colaboracion": colaboracion.tipo_colaboracion,
+            "descripcion": colaboracion.descripcion,
+            "fecha": str(colaboracion.fecha_colaboracion)
+        }
+        
+        self.db.delete(colaboracion)
+        self.db.commit()
+        
+        # Notificación local
+        await self.notification_service.notify_event({
+            "type": "colaboracion_eliminada",
+            "category": "historial",
+            "data": colaboracion_data
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "colaboracion_eliminada",
+            "category": "historial",
+            "data": colaboracion_data
+        })
+        
+        return True
     
     def obtener_historial_por_donante(self, donante_id: int) -> List[HistorialColaboracion]:
         """Obtener todo el historial de colaboraciones de un donante"""
@@ -111,7 +177,7 @@ class HistorialService:
         ).order_by(HistorialColaboracion.fecha_colaboracion.desc()).all()
     
     def obtener_estadisticas_colaboraciones(self) -> Dict[str, Any]:
-        """Obtener estadísticas completas de colaboraciones"""
+        """Obtener estadísticas completas de colaboraciones - Compatible con SQLite"""
         total = self.db.query(HistorialColaboracion).count()
         
         # Estadísticas por tipo
@@ -120,16 +186,18 @@ class HistorialService:
             func.count(HistorialColaboracion.id).label('cantidad')
         ).group_by(HistorialColaboracion.tipo_colaboracion).all()
         
-        # Colaboraciones por mes (últimos 12 meses)
+        # Colaboraciones por mes - Compatible con SQLite
         hace_12_meses = date.today() - timedelta(days=365)
         colaboraciones_mensuales = self.db.query(
-            func.date_trunc('month', HistorialColaboracion.fecha_colaboracion).label('mes'),
+            extract('year', HistorialColaboracion.fecha_colaboracion).label('año'),
+            extract('month', HistorialColaboracion.fecha_colaboracion).label('mes'),
             func.count(HistorialColaboracion.id).label('cantidad')
         ).filter(
             HistorialColaboracion.fecha_colaboracion >= hace_12_meses
         ).group_by(
-            func.date_trunc('month', HistorialColaboracion.fecha_colaboracion)
-        ).order_by('mes').all()
+            extract('year', HistorialColaboracion.fecha_colaboracion),
+            extract('month', HistorialColaboracion.fecha_colaboracion)
+        ).order_by('año', 'mes').all()
         
         # Donantes más activos
         donantes_activos = self.db.query(
@@ -149,9 +217,9 @@ class HistorialService:
             "por_tipo": {tipo: cantidad for tipo, cantidad in tipos_stats},
             "por_mes": [
                 {
-                    "mes": mes.strftime("%Y-%m") if mes else "N/A",
+                    "mes": f"{int(año)}-{int(mes):02d}",
                     "cantidad": cantidad
-                } for mes, cantidad in colaboraciones_mensuales
+                } for año, mes, cantidad in colaboraciones_mensuales
             ],
             "donantes_mas_activos": [
                 {
@@ -195,32 +263,3 @@ class HistorialService:
                 } for c in colaboraciones[:5]  # Últimas 5
             ]
         }
-    
-    async def eliminar_colaboracion(self, colaboracion_id: int) -> bool:
-        """Eliminar una colaboración del historial"""
-        colaboracion = self.obtener_colaboracion(colaboracion_id)
-        if not colaboracion:
-            return False
-        
-        # Obtener datos para notificación antes de eliminar
-        donante = self.db.query(Donante).filter(Donante.id == colaboracion.donante_id).first()
-        colaboracion_data = {
-            "id": colaboracion.id,
-            "donante_id": colaboracion.donante_id,
-            "donante_nombre": donante.nombre if donante else "Desconocido",
-            "tipo_colaboracion": colaboracion.tipo_colaboracion,
-            "descripcion": colaboracion.descripcion,
-            "fecha": str(colaboracion.fecha_colaboracion)
-        }
-        
-        self.db.delete(colaboracion)
-        self.db.commit()
-        
-        # Notificación de eliminación
-        await self.notification_service.notify_event({
-            "type": "colaboracion_eliminada",
-            "category": "historial",
-            "data": colaboracion_data
-        })
-        
-        return True

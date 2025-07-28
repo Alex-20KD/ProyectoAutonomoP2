@@ -1,6 +1,3 @@
--- Conectar a la base de datos fundacion_mascotas
-\c fundacion_mascotas;
-
 -- Tabla de donantes
 CREATE TABLE IF NOT EXISTS donantes (
     id SERIAL PRIMARY KEY,

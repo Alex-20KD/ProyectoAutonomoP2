@@ -3,6 +3,7 @@ from sqlalchemy import and_
 from app.models.verificacion_donante import VerificacionDonante
 from app.models.donante import Donante
 from app.websockets.notification_service import NotificationService
+from app.websockets.central_connector import central_connector
 from typing import List, Optional
 from datetime import date
 
@@ -23,13 +24,30 @@ class VerificacionService:
         self.db.commit()
         self.db.refresh(verificacion)
         
-        # Notificación en tiempo real
+        # Notificación local
         await self.notification_service.notify_verificacion_events("creada", {
             "id": verificacion.id,
             "donante_id": verificacion.donante_id,
             "donante_nombre": donante.nombre,
             "resultado": verificacion.resultado,
             "fecha": str(verificacion.fecha_verificacion)
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "verificacion_donante_creada",
+            "category": "verificacion",
+            "priority": "high",  # Las verificaciones son críticas
+            "data": {
+                "id": verificacion.id,
+                "donante_id": verificacion.donante_id,
+                "donante_nombre": donante.nombre,
+                "donante_correo": donante.correo,
+                "donante_documento": donante.numero_documento,
+                "resultado": verificacion.resultado,
+                "observaciones": verificacion.observaciones,
+                "fecha_verificacion": str(verificacion.fecha_verificacion)
+            }
         })
         
         # Si es rechazado, cambiar estado del donante
@@ -69,7 +87,7 @@ class VerificacionService:
         self.db.commit()
         self.db.refresh(verificacion)
         
-        # Notificación de actualización
+        # Notificación local
         donante = self.db.query(Donante).filter(Donante.id == verificacion.donante_id).first()
         await self.notification_service.notify_verificacion_events("actualizada", {
             "id": verificacion.id,
@@ -78,6 +96,20 @@ class VerificacionService:
             "resultado_anterior": resultado_anterior,
             "resultado_nuevo": verificacion.resultado,
             "cambios": list(datos_actualizacion.keys())
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "verificacion_donante_actualizada",
+            "category": "verificacion",
+            "data": {
+                "id": verificacion.id,
+                "donante_id": verificacion.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "resultado_anterior": resultado_anterior,
+                "resultado_nuevo": verificacion.resultado,
+                "cambios": list(datos_actualizacion.keys())
+            }
         })
         
         return verificacion
@@ -113,7 +145,7 @@ class VerificacionService:
             elif nuevo_resultado == "Rechazado":
                 await self._cambiar_estado_donante_por_verificacion(donante, "Suspendido")
         
-        # Notificación de revisión
+        # Notificación local
         await self.notification_service.notify_verificacion_events("revisada", {
             "id": verificacion.id,
             "donante_id": verificacion.donante_id,
@@ -121,6 +153,22 @@ class VerificacionService:
             "resultado_anterior": resultado_anterior,
             "resultado_nuevo": nuevo_resultado,
             "observaciones": observaciones
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "verificacion_donante_revisada",
+            "category": "verificacion",
+            "priority": "critical",  # Cambios de verificación son críticos
+            "data": {
+                "id": verificacion.id,
+                "donante_id": verificacion.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "resultado_anterior": resultado_anterior,
+                "resultado_nuevo": nuevo_resultado,
+                "observaciones": observaciones,
+                "impacto_estado_donante": nuevo_resultado
+            }
         })
         
         return verificacion
@@ -147,11 +195,26 @@ class VerificacionService:
             donante.estado = nuevo_estado
             self.db.commit()
             
-            # Notificar cambio de estado
+            # Notificar cambio de estado local
             await self.notification_service.notify_donante_events("estado_cambiado_por_verificacion", {
                 "id": donante.id,
                 "nombre": donante.nombre,
                 "estado_anterior": estado_anterior,
                 "estado_nuevo": nuevo_estado,
                 "motivo": "Resultado de verificación"
+            })
+            
+            # Notificación al WebSocket Central
+            await central_connector.send_event({
+                "type": "donante_estado_cambiado_por_verificacion",
+                "category": "donante",
+                "priority": "critical",
+                "data": {
+                    "id": donante.id,
+                    "nombre": donante.nombre,
+                    "correo": donante.correo,
+                    "estado_anterior": estado_anterior,
+                    "estado_nuevo": nuevo_estado,
+                    "motivo": "Resultado de verificación automática"
+                }
             })

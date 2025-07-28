@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.informacion_contacto import InformacionContacto
 from app.models.donante import Donante
 from app.websockets.notification_service import NotificationService
+from app.websockets.central_connector import central_connector
 from typing import List, Optional
 
 class ContactoService:
@@ -21,7 +22,7 @@ class ContactoService:
         self.db.commit()
         self.db.refresh(contacto)
         
-        # Notificación en tiempo real
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "contacto_creado",
             "category": "contacto",
@@ -30,6 +31,21 @@ class ContactoService:
                 "donante_id": contacto.donante_id,
                 "donante_nombre": donante.nombre,
                 "nombre_contacto": contacto.nombre_contacto,
+                "relacion": contacto.relacion
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "contacto_referencia_agregado",
+            "category": "contacto",
+            "data": {
+                "id": contacto.id,
+                "donante_id": contacto.donante_id,
+                "donante_nombre": donante.nombre,
+                "donante_correo": donante.correo,
+                "contacto_nombre": contacto.nombre_contacto,
+                "contacto_telefono": contacto.telefono,
                 "relacion": contacto.relacion
             }
         })
@@ -65,7 +81,7 @@ class ContactoService:
         self.db.commit()
         self.db.refresh(contacto)
         
-        # Notificación de actualización
+        # Notificación local
         donante = self.db.query(Donante).filter(Donante.id == contacto.donante_id).first()
         await self.notification_service.notify_event({
             "type": "contacto_actualizado",
@@ -75,6 +91,19 @@ class ContactoService:
                 "donante_id": contacto.donante_id,
                 "donante_nombre": donante.nombre if donante else "Desconocido",
                 "nombre_contacto": contacto.nombre_contacto,
+                "cambios": list(datos_actualizacion.keys())
+            }
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "contacto_referencia_actualizado",
+            "category": "contacto",
+            "data": {
+                "id": contacto.id,
+                "donante_id": contacto.donante_id,
+                "donante_nombre": donante.nombre if donante else "Desconocido",
+                "contacto_nombre": contacto.nombre_contacto,
                 "cambios": list(datos_actualizacion.keys())
             }
         })
@@ -100,9 +129,16 @@ class ContactoService:
         self.db.delete(contacto)
         self.db.commit()
         
-        # Notificación de eliminación
+        # Notificación local
         await self.notification_service.notify_event({
             "type": "contacto_eliminado",
+            "category": "contacto",
+            "data": contacto_data
+        })
+        
+        # Notificación al WebSocket Central
+        await central_connector.send_event({
+            "type": "contacto_referencia_eliminado",
             "category": "contacto",
             "data": contacto_data
         })

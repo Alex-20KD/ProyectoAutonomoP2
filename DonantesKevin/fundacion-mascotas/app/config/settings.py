@@ -11,9 +11,9 @@ class Settings:
     DB_PASSWORD = os.getenv("DB_PASSWORD", "123")
     DB_NAME = os.getenv("DB_NAME", "fundacion_mascotas")
     
-    # Server
+    # Server - CAMBIAR PARA DESARROLLO LOCAL
     PORT = int(os.getenv("PORT", 8000))
-    HOST = os.getenv("HOST", "0.0.0.0")
+    HOST = os.getenv("HOST", "localhost")  
     
     # WebSocket
     WS_PORT = int(os.getenv("WS_PORT", 8001))
